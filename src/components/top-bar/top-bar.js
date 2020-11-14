@@ -2,6 +2,10 @@
 import React from 'react';
 import clsx from 'clsx';
 
+// Redux
+import { connect } from 'react-redux';
+import { onAddFolder } from '../../reducers/index';
+
 // Material-UI
 import { AppBar, Toolbar, IconButton, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -11,7 +15,7 @@ import NoteAddIcon from '@material-ui/icons/NoteAdd';
 // Styles
 import useStyles from './top-bar-styles';
 
-const TopBar = ({ open, setOpen }) => {
+const TopBar = ({ open, setOpen, onAddFolder }) => {
   const classes = useStyles();
   
   const handleDrawerOpen = () => {
@@ -37,7 +41,7 @@ const TopBar = ({ open, setOpen }) => {
         </IconButton>
                      
         <Typography variant="h6" noWrap>
-          <IconButton aria-label="create new folder">
+          <IconButton onClick={onAddFolder} aria-label="create new folder">
             <CreateNewFolderIcon className={classes.сreateNewFolderIcon} />
           </IconButton>
 
@@ -50,4 +54,10 @@ const TopBar = ({ open, setOpen }) => {
   );
 };
 
-export default TopBar;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAddFolder: () => dispatch(onAddFolder())
+  };
+};
+
+export default connect (null, mapDispatchToProps)(TopBar);

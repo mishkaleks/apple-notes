@@ -1,6 +1,9 @@
 // Base
 import React, { Component } from 'react';
 
+// Redux
+import { connect } from 'react-redux';
+
 // Material-UI
 import { IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
@@ -8,7 +11,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 class FolderListItem extends Component {
   render() {
-    const { classes, folders = [{id: 1, title: 'Folder Name'}, {id: 2, title: 'Folder Name'}] } = this.props;
+    const { classes, folders } = this.props;
     
     const items = folders.map(item => {
       const { id, title } = item;
@@ -20,7 +23,7 @@ class FolderListItem extends Component {
             type="text"
             id={`folderName${id}`}
             className={classes.folderName}
-            defaultValue={title + ' ' + id}
+            defaultValue={title}
             disabled
           />
 
@@ -39,10 +42,16 @@ class FolderListItem extends Component {
 
     return (
       <React.Fragment>
-        {items}
+        { items }
       </React.Fragment>
     );
   };
 };
 
-export default FolderListItem;
+const mapStateToProps = ({ folders }) => {
+  return {
+    folders
+  };
+};
+
+export default connect (mapStateToProps)(FolderListItem);
