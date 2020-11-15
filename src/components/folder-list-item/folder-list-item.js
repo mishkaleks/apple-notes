@@ -1,18 +1,20 @@
 // Base
 import React, { Component } from 'react';
+import clsx from 'clsx';
 
 // Redux
 import { connect } from 'react-redux';
-import { onDeleteFolder } from '../../reducers/index';
+import { onDeleteFolder, onEditFolderName, getFolderName, onAcceptFolderName } from '../../reducers/index';
 
 // Material-UI
 import { IconButton } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 class FolderListItem extends Component {
   render() {
-    const { classes, folders, onDeleteFolder } = this.props;
+    const { classes, folders, onDeleteFolder, onEditFolderName, getFolderName, onAcceptFolderName } = this.props;
     
     const items = folders.map(item => {
       const { id, title } = item;
@@ -20,6 +22,7 @@ class FolderListItem extends Component {
       return (
         <li key={id} className={classes.folderListItem}>
           <input
+            onChange={getFolderName}
             type="text"
             id={`folderName${id}`}
             className={classes.folderName}
@@ -28,7 +31,11 @@ class FolderListItem extends Component {
           />
 
           <div className={classes.wrFolderBtns}>
-            <IconButton id={`editFolderName${id}`} aria-label="edit" className={classes.editFolderNameBtn}>
+            <IconButton onClick={() => onAcceptFolderName(id)} id={`acceptFolderName${id}`} aria-label="edit" className={clsx(classes.editFolderNameBtn, classes.acceptNameBtn)}>
+              <CheckIcon className={classes.checkIcon}  />
+            </IconButton>
+
+            <IconButton onClick={() => onEditFolderName(id)} id={`editFolderName${id}`} aria-label="edit" className={classes.editFolderNameBtn}>
               <EditIcon className={classes.editIcon} />
             </IconButton>
 
@@ -56,7 +63,10 @@ const mapStateToProps = ({ folders }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onDeleteFolder: (id) => dispatch(onDeleteFolder(id))
+    onDeleteFolder: (id) => dispatch(onDeleteFolder(id)),
+    onEditFolderName: (id) => dispatch(onEditFolderName(id)),
+    getFolderName: (event) => dispatch(getFolderName(event)),
+    onAcceptFolderName: (id) => dispatch(onAcceptFolderName(id))
   };
 };
 
