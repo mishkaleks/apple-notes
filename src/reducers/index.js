@@ -1,7 +1,8 @@
 const initialState = {
   folders: [],
   newFolderName: '',
-  activeFolderId: null
+  activeFolderId: null,
+  activeNoteId: null
 };
 
 const ADD_FOLDER_TO_NOTES = 'ADD_FOLDER_TO_NOTES';
@@ -11,6 +12,7 @@ const GET_FOLDER_NAME_TO_NOTES = 'GET_FOLDER_NAME_TO_NOTES';
 const ACCEPT_FOLDER_NAME_TO_NOTES = 'ACCEPT_FOLDER_NAME_TO_NOTES';
 const GET_ACTIVE_FOLDER_TO_NOTES = 'GET_ACTIVE_FOLDER_TO_NOTES';
 const ADD_NOTE_TO_FOLDER = 'ADD_NOTE_TO_FOLDER';
+const DELETE_NOTE_TO_FOLDER = 'DELETE_NOTE_TO_FOLDER';
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -88,6 +90,19 @@ const reducer = (state = initialState, action) => {
         ...state,
         folders: [...state.folders.map((item) => item.id === state.activeFolderId ? {...item, notes: [...item.notes, newNote]} : item)]
       };
+    case DELETE_NOTE_TO_FOLDER:
+      const activeFolderId = state.folders.findIndex((item) => item.id === state.activeFolderId);
+      const deleteNoteId = state.folders[activeFolderId].notes.findIndex((item) => item.id === action.payload);
+
+      return {
+        ...state,
+        folders: [
+          ...state.folders.map((item) => item.id === state.activeFolderId 
+            ? {...item, notes: [...item.notes.slice(0, deleteNoteId), ...item.notes.slice(deleteNoteId + 1)]} 
+            : item
+          )
+        ]
+      };
     default:
       return state;
   }
@@ -143,6 +158,13 @@ const onCreateNewNote = () => {
   };
 };
 
+const onDeleteNote = (id) => {
+  return {
+    type: 'DELETE_NOTE_TO_FOLDER',
+    payload: id
+  };
+};
+
 export {
   onAddFolder,
   onDeleteFolder,
@@ -150,5 +172,6 @@ export {
   getFolderName,
   onAcceptFolderName,
   onActiveFolder,
-  onCreateNewNote
+  onCreateNewNote,
+  onDeleteNote
 };

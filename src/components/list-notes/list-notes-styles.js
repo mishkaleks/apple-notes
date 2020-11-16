@@ -8,7 +8,7 @@ const useStyles = makeStyles(theme => ({
     overflow: 'scroll',
     backgroundColor: '#cfe8fc'
   },
-  noteListItem: {
+  inactiveNoteListItem: {
     display: 'flex',
     justifyContent: 'space-between',
     alignContent: 'center',
@@ -24,7 +24,18 @@ const useStyles = makeStyles(theme => ({
     },
     '&:hover $noteName': {
       color: '#fff'
+    },
+    '&:hover $noteBtnsIncons': {
+      color: '#fff'
     }
+  },
+  activeNoteListItem: {
+    background: '#3f51b5',
+    color: '#000'
+  },
+  unclickableNoteListItem: {
+    opacity: '0.6',
+    pointerEvents: 'none'
   },
   noteName: {
     display: 'flex',
@@ -51,13 +62,7 @@ const useStyles = makeStyles(theme => ({
   acceptNoteNameBtn: {
     display: 'none'
   },
-  checkIcon: {
-    fontSize: '1rem'
-  },
-  editIcon: {
-    fontSize: '1rem'
-  },
-  deleteIcon: {
+  noteBtnsIncons: {
     fontSize: '1rem'
   }
 }));
