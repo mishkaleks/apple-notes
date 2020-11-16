@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   listNotes: {
-    width: '270px',
+    width: '325px',
     padding: '15px',
     overflow: 'scroll',
     backgroundColor: '#cfe8fc'
@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
       border: '1px solid #fff',
       background: '#3f51b5'
     },
-    '&:hover $noteName': {
+    '&:hover $inactiveNoteName': {
       color: '#fff'
     },
     '&:hover $noteBtnsIncons': {
@@ -30,14 +30,13 @@ const useStyles = makeStyles(theme => ({
     }
   },
   activeNoteListItem: {
-    background: '#3f51b5',
-    color: '#000'
+    background: '#3f51b5'
   },
   unclickableNoteListItem: {
     opacity: '0.6',
     pointerEvents: 'none'
   },
-  noteName: {
+  inactiveNoteName: {
     display: 'flex',
     alignItems: 'center',
     flexGrow: 1,
@@ -48,7 +47,26 @@ const useStyles = makeStyles(theme => ({
     padding: '5px',
     boxShadow: 'none',
     outline: 'none',
-    background: 'none'
+    background: 'none',
+    color: '#000',
+    pointerEvents: 'none'
+  },
+  activeNoteName: {
+    display: 'flex',
+    alignItems: 'center',
+    flexGrow: 1,
+    width: '120px',
+    border: '1px solid #fff',
+    borderRadius: '5px',
+    marginRight: '5px',
+    padding: '5px',
+    boxShadow: 'none',
+    outline: 'none',
+    background: 'none',
+    pointerEvents: 'auto'
+  },
+  activeNoteNameText: {
+    color: '#fff'
   },
   wrNoteControlBtns: {
     display: 'flex',
@@ -59,11 +77,21 @@ const useStyles = makeStyles(theme => ({
     padding: '10px',
     fontSize: '1rem'
   },
-  acceptNoteNameBtn: {
+  inactiveNoteControlBtns: {
+    pointerEvents: 'none',
+    opacity: '0.3'
+  },
+  activeAcceptNoteNameBtn: {
+    display: 'block'
+  },
+  inactiveAcceptNoteNameBtn: {
     display: 'none'
   },
   noteBtnsIncons: {
     fontSize: '1rem'
+  },
+  inactiveNoteBtnsIncons: {
+    color: '#fff'
   }
 }));
 

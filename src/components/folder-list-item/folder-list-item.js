@@ -118,22 +118,22 @@ class FolderListItem extends Component {
   };
 };
 
-const mapStateToProps = ({ folders, newFolderName, activeFolderId }) => {
+const mapStateToProps = ({ folders, newFolderName, activeFolderId, activeNoteId, newNoteName }) => {
   return {
     folders,
     newFolderName,
-    activeFolderId
+    activeFolderId,
+    activeNoteId,
+    newNoteName
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onDeleteFolder: (id) => dispatch(onDeleteFolder(id)),
-    onEditFolderName: (id, item) => dispatch(onEditFolderName(id, item)),
-    getFolderName: (e) => dispatch(getFolderName(e)),
-    onAcceptFolderName: (id, item) => dispatch(onAcceptFolderName(id, item)),
-    onActiveFolder: (id) => dispatch(onActiveFolder(id))
-  };
+const mapDispatchToProps = {
+    onDeleteFolder,
+    onEditFolderName,
+    getFolderName,
+    onAcceptFolderName,
+    onActiveFolder
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FolderListItem);

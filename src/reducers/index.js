@@ -2,6 +2,7 @@ const initialState = {
   folders: [],
   newFolderName: '',
   activeFolderId: null,
+  newNoteName: '',
   activeNoteId: null
 };
 
@@ -13,6 +14,10 @@ const ACCEPT_FOLDER_NAME_TO_NOTES = 'ACCEPT_FOLDER_NAME_TO_NOTES';
 const GET_ACTIVE_FOLDER_TO_NOTES = 'GET_ACTIVE_FOLDER_TO_NOTES';
 const ADD_NOTE_TO_FOLDER = 'ADD_NOTE_TO_FOLDER';
 const DELETE_NOTE_TO_FOLDER = 'DELETE_NOTE_TO_FOLDER';
+const EDIT_NOTE_NAME_TO_FOLDER = 'EDIT_NOTE_NAME_TO_FOLDER';
+const GET_NOTE_NAME_TO_FOLDER = 'GET_NOTE_NAME_TO_FOLDER';
+const ACCEPT_NOTE_NAME_TO_FOLDER = 'ACCEPT_NOTE_NAME_TO_FOLDER';
+const GET_ACTIVE_NOTE_TO_FOLDER = 'GET_ACTIVE_NOTE_TO_FOLDER';
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -46,7 +51,8 @@ const reducer = (state = initialState, action) => {
     case GET_ACTIVE_FOLDER_TO_NOTES:
       return {
         ...state,
-        activeFolderId: action.id
+        activeFolderId: action.id,
+        activeNoteId: null
       }; 
     case ADD_NOTE_TO_FOLDER:
       return {
@@ -66,7 +72,40 @@ const reducer = (state = initialState, action) => {
             ? {...item, notes: [...item.notes.slice(0, action.id), ...item.notes.slice(action.id + 1)]} 
             : item
           )
-        ]
+        ],
+        activeNoteId: null
+      };
+    case EDIT_NOTE_NAME_TO_FOLDER:
+      return {
+        ...state,
+        folders: [
+          ...state.folders.map((item) => item.id === state.activeFolderId
+            ? {...item, notes: [...item.notes.slice(0, action.idx), action.item, ...item.notes.slice(action.idx + 1)]}
+            : item
+          )
+        ],
+        activeNoteId: action.id
+      };
+    case GET_NOTE_NAME_TO_FOLDER:
+      return {
+        ...state,
+        newNoteName: action.payload
+      };
+    case ACCEPT_NOTE_NAME_TO_FOLDER:
+      return {
+        ...state,
+        folders: [
+          ...state.folders.map((item) => item.id === state.activeFolderId
+            ? {...item, notes: [...item.notes.slice(0, action.id), action.item, ...item.notes.slice(action.id + 1)]}
+            : item
+          )
+        ],
+        newNoteName: ''
+      };
+    case GET_ACTIVE_NOTE_TO_FOLDER:
+      return {
+        ...state,
+        activeNoteId: action.id
       };
     default:
       return state;
@@ -133,6 +172,37 @@ const onDeleteNote = (id) => {
   };
 };
 
+const onEditNoteName = (id, idx, item) => {
+  return {
+    type: 'EDIT_NOTE_NAME_TO_FOLDER',
+    id,
+    idx,
+    item
+  };
+};
+
+const getNoteName = (e) => {
+  return {
+    type: 'GET_NOTE_NAME_TO_FOLDER',
+    payload: e.target.value
+  };
+};
+
+const onAcceptNoteName = (id, item) => {
+  return {
+    type: 'ACCEPT_NOTE_NAME_TO_FOLDER',
+    id,
+    item
+  };
+};
+
+const onActiveNote = (id) => {
+  return {
+    type: 'GET_ACTIVE_NOTE_TO_FOLDER',
+    id
+  };
+};
+
 export {
   onAddFolder,
   onDeleteFolder,
@@ -141,5 +211,9 @@ export {
   onAcceptFolderName,
   onActiveFolder,
   onCreateNewNote,
-  onDeleteNote
+  onDeleteNote,
+  onEditNoteName,
+  getNoteName,
+  onAcceptNoteName,
+  onActiveNote
 };

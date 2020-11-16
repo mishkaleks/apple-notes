@@ -1,23 +1,38 @@
 // Base
-import React from 'react';
+import React, { Component } from 'react';
+
+// Redux
+import { connect } from 'react-redux';
 
 // Material-UI
 import { Box } from '@material-ui/core';
 
-// Styles
-import useStyles from './note-content-styles';
-
-const NoteContent = ({ open, setOpen }) => {
-  const classes = useStyles();
-  
-  return (
-    <Box className={classes.wrNoteContent}>
-      <textarea 
-        className={classes.noteContent} 
-        placeholder="Add description to note"
-      ></textarea>
-    </Box>
-  );
+class NoteContent extends Component {
+  render() {
+    const { classes, folders, activeFolderId, activeNoteId } = this.props;
+    const noteContent = activeFolderId !== null && activeNoteId !== null 
+      ? folders[folders.findIndex((item) => item.id === activeFolderId)].notes.find((item) => item.id === activeNoteId).content
+      : 'Select a note from the active directory list';
+      const idKey = `${activeFolderId}_${activeNoteId}`;
+    
+    return (
+      <Box className={classes.wrNoteContent}>
+        <textarea
+          key={idKey} 
+          className={classes.noteContent}
+          defaultValue={noteContent}
+        ></textarea>
+      </Box>
+    );
+  };
 };
 
-export default NoteContent;
+const mapStateToProps = ({ folders, activeFolderId, activeNoteId }) => {
+  return {
+    folders,
+    activeFolderId,
+    activeNoteId
+  };
+};
+
+export default connect(mapStateToProps, null)(NoteContent);

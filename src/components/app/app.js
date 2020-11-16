@@ -29,7 +29,7 @@ export default function PersistentDrawerLeft() {
         <div className={classes.drawerHeader} />
         <Box className={classes.wrColumn}>
           <ListNotes />
-          <NoteContent />    
+          <NoteContent classes={classes} />    
         </Box>
       </main>    
     </div>
