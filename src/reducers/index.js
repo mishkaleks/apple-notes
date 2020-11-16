@@ -18,6 +18,7 @@ const EDIT_NOTE_NAME_TO_FOLDER = 'EDIT_NOTE_NAME_TO_FOLDER';
 const GET_NOTE_NAME_TO_FOLDER = 'GET_NOTE_NAME_TO_FOLDER';
 const ACCEPT_NOTE_NAME_TO_FOLDER = 'ACCEPT_NOTE_NAME_TO_FOLDER';
 const GET_ACTIVE_NOTE_TO_FOLDER = 'GET_ACTIVE_NOTE_TO_FOLDER';
+const GET_CONTENT_TO_NOTE = 'GET_CONTENT_TO_NOTE';
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -30,7 +31,8 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         folders: [...state.folders.slice(0, action.id), ...state.folders.slice(action.id + 1)],
-        activeFolderId: null
+        activeFolderId: null,
+        activeNoteId: null
       };
     case EDIT_FOLDER_NAME_TO_NOTES:
       return {
@@ -106,6 +108,16 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         activeNoteId: action.id
+      };
+    case GET_CONTENT_TO_NOTE:
+      return {
+        ...state,
+        folders: [
+          ...state.folders.map((item) => item.id === state.activeFolderId
+            ? {...item, notes: [...item.notes.slice(0, action.id), action.item, ...item.notes.slice(action.id + 1)]}
+            : item
+          )
+        ]
       };
     default:
       return state;
@@ -203,6 +215,14 @@ const onActiveNote = (id) => {
   };
 };
 
+const getNoteContent = (id, item) => {
+  return {
+    type: 'GET_CONTENT_TO_NOTE',
+    id,
+    item
+  };
+};
+
 export {
   onAddFolder,
   onDeleteFolder,
@@ -215,5 +235,6 @@ export {
   onEditNoteName,
   getNoteName,
   onAcceptNoteName,
-  onActiveNote
+  onActiveNote,
+  getNoteContent
 };

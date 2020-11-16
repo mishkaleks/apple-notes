@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   listNotes: {
     width: '325px',
+    height: 'calc(100vh - 64px)',
     padding: '15px',
     overflow: 'scroll',
     backgroundColor: '#cfe8fc'

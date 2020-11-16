@@ -142,11 +142,11 @@ const mapStateToProps = ({ folders, activeFolderId, activeNoteId, newNoteName })
 
 
 const mapDispatchToProps = {
-    onDeleteNote,
-    onEditNoteName,
-    getNoteName,
-    onAcceptNoteName,
-    onActiveNote
+  onDeleteNote,
+  onEditNoteName,
+  getNoteName,
+  onAcceptNoteName,
+  onActiveNote
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListNotesItem);

@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    height: '100vh',
+    height: 'calc(100vh - 20px)',
     marginLeft: -drawerWidth,
     padding: 0,
     transition: theme.transitions.create('margin', {
@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   },
   wrColumn: {
     display: 'flex',
-    flexGrow: 1
+    flexGrow: 1,
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -41,18 +41,38 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 0
   },
   wrNoteContent: {
-    width: 'calc(100% - 270px)'
+    position: 'relative',
+    width: 'calc(100% - 325px)'
   },
   noteContent: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     flexGrow: 1,
     width: '100%',
-    height: '100%',
     border: 'none',
     padding: '15px',
     resize: 'none',
     '&:focus': {
       outline: 'none'
     }
+  },
+  activeStubContentNotes: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    flexGrow: 1,
+    width: '100%',
+    border: 'none',
+    padding: '15px',
+    resize: 'none'
+  },
+  inactiveStubContentNotes: {
+    display: 'none'
   }
 }));
 

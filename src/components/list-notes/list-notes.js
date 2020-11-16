@@ -13,13 +13,13 @@ import { Box } from '@material-ui/core';
 // Styles
 import useStyles from './list-notes-styles';
 
-const NoteList = ({ folders, activeFolderId }) => {
+const NoteList = ({ folders, activeFolderId, activeNoteId }) => {
   const classes = useStyles();
 
   return (
     <Box className={classes.listNotes}>
       {
-        activeFolderId === null 
+        activeFolderId === null
           ? 'List of the notes' 
           : folders[folders.findIndex((item) => item.id === activeFolderId)].notes.map(({ id, title }) => {
         const idKey = `${activeFolderId}_${id}`;
@@ -38,10 +38,11 @@ const NoteList = ({ folders, activeFolderId }) => {
   );
 };
 
-const mapStateToProps = ({ folders, activeFolderId }) => {
+const mapStateToProps = ({ folders, activeFolderId, activeNoteId }) => {
   return {
     folders,
-    activeFolderId
+    activeFolderId,
+    activeNoteId
   };
 };
 
