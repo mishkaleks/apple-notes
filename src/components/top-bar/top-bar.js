@@ -15,11 +15,38 @@ import NoteAddIcon from '@material-ui/icons/NoteAdd';
 // Styles
 import useStyles from './top-bar-styles';
 
-const TopBar = ({ open, setOpen, onAddFolder, onCreateNewNote, activeFolderId }) => {
+const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFolderId }) => {
   const classes = useStyles();
   
   const handleDrawerOpen = () => {
     setOpen(true);
+  };
+
+  const handleOnAddFolder = () => {
+    const id = folders.length === 0 ? 0 : folders[folders.length - 1].id + 1;
+    const newFolder = {
+      id,
+      title: `New Foolder ${id + 1}`,
+      notes: [],
+      edited: false
+    };
+
+    onAddFolder(newFolder);
+  };
+
+  const handleOnCreateNewNote = () => {
+    const idFolder = folders.findIndex((item) => item.id === activeFolderId);
+    const idNote = folders[idFolder].notes.length === 0 
+      ? 0 
+      : folders[idFolder].notes[folders[idFolder].notes.length - 1].id + 1;
+    const newNote = {
+      id: idNote,
+      title: `New Note ${idNote + 1}`,
+      content: '',
+      edited: false
+    };
+    
+    onCreateNewNote(newNote);
   };
   
   return (
@@ -41,12 +68,12 @@ const TopBar = ({ open, setOpen, onAddFolder, onCreateNewNote, activeFolderId })
         </IconButton>
                      
         <Typography variant="h6" noWrap>
-          <IconButton onClick={onAddFolder} aria-label="create new folder">
+          <IconButton onClick={handleOnAddFolder} aria-label="create new folder">
             <CreateNewFolderIcon className={classes.сreateNewFolderIcon} />
           </IconButton>
 
           <IconButton 
-            onClick={onCreateNewNote} 
+            onClick={handleOnCreateNewNote} 
             aria-label="note add" 
             className={activeFolderId === null ? classes.inactiveCreateNewNoteBtn : classes.activeCreateNewNoteBtn}
           >
@@ -58,17 +85,18 @@ const TopBar = ({ open, setOpen, onAddFolder, onCreateNewNote, activeFolderId })
   );
 };
 
-const mapStateToProps = ({ activeFolderId }) => {
+const mapStateToProps = ({ folders, activeFolderId }) => {
   return {
+    folders,
     activeFolderId
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAddFolder: () => dispatch(onAddFolder()),
-    onCreateNewNote: () => dispatch(onCreateNewNote())
+    onAddFolder: (item) => dispatch(onAddFolder(item)),
+    onCreateNewNote: (item) => dispatch(onCreateNewNote(item))
   };
 };
 
-export default connect (mapStateToProps, mapDispatchToProps)(TopBar);
+export default connect (mapStateToProps, mapDispatchToProps)(TopBar); 

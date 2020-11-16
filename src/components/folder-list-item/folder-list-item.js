@@ -13,25 +13,67 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 class FolderListItem extends Component {  
+
+  handleOnDeleteFolder = (e) => {
+    const { folders, onDeleteFolder, id } = this.props;
+    const deleteId = folders.findIndex((item) => item.id === id);
+
+    e.stopPropagation();
+    onDeleteFolder(deleteId);
+  };
+
+  handleOnEditFolderName = () => {
+    const { folders, onEditFolderName, id } = this.props;
+    const idEditedFolder = folders.findIndex((item) => item.id === id);
+    const editedFolder = folders[idEditedFolder];
+    const updateEditedFolder = {
+      ...editedFolder,
+      edited: true
+    };
+
+    onEditFolderName(idEditedFolder, updateEditedFolder);
+  };
+
+  handleGetFolderName = (e) => {
+    this.props.getFolderName(e);
+  };
+
+  handleOnAcceptFolderName = () => {
+    const { folders, newFolderName, onAcceptFolderName, id } = this.props;
+    const oldFolderId = folders.findIndex((item) => item.id === id);
+    const oldFolder = folders[oldFolderId];
+    const newFolderTitle = newFolderName ? newFolderName : oldFolder.title;
+    const updateFolder = {
+      ...oldFolder,
+      title: newFolderTitle,
+      edited: !oldFolder.edited
+    };
+
+    onAcceptFolderName(oldFolderId, updateFolder);
+  };
+
+  handleOnActiveFolder = () => {
+    const { onActiveFolder, id } = this.props;
+     
+    onActiveFolder(id);
+  };
+
   render() {
-    const { classes, folders, onDeleteFolder, onEditFolderName, getFolderName, onAcceptFolderName, onActiveFolder, activeFolderId } = this.props;
+    const { classes, folders, activeFolderId, id, title } = this.props;
     const activeFolder = folders.find((item) => item.edited === true);
     const isActiveFolder = activeFolderId === null ? false : folders[folders.findIndex((item) => item.id === activeFolderId)].edited;
-    
-    const items = folders.map(item => {
-      const { id, title } = item;
 
-      return (
+    return (
+      <>
         <li 
-          onClick={() => onActiveFolder(id)}
-          key={id}
+          onClick={this.handleOnActiveFolder}
           className={clsx(classes.inactiveFolderListItem, {
               [classes.activeFolderListItem]: activeFolderId === id,
               [classes.unclickableFolderListItem]: activeFolder ? activeFolder.id !== id : false
           })}
         >
           <input
-            onChange={getFolderName}
+            onChange={this.handleGetFolderName}
             type="text"
             className={isActiveFolder && activeFolderId === id ? classes.activeFolderName : classes.inactiveFolderName}
             defaultValue={title}
@@ -39,7 +81,7 @@ class FolderListItem extends Component {
 
           <div className={classes.wrFolderControlBtns}>
             <IconButton 
-              onClick={() => onAcceptFolderName(id)}  
+              onClick={this.handleOnAcceptFolderName}  
               aria-label="check" 
               className={clsx(classes.folderControlBtns, 
                 isActiveFolder && activeFolderId === id 
@@ -51,7 +93,7 @@ class FolderListItem extends Component {
             </IconButton>
 
             <IconButton 
-              onClick={() => onEditFolderName(id)} 
+              onClick={this.handleOnEditFolderName} 
               aria-label="edit" 
               className={clsx(classes.folderControlBtns, 
                 isActiveFolder && activeFolderId === id ? classes.inactiveFolderControlBtns : ''
@@ -61,7 +103,7 @@ class FolderListItem extends Component {
             </IconButton>
 
             <IconButton 
-              onClick={(e) => onDeleteFolder(id, e)} 
+              onClick={(e) => this.handleOnDeleteFolder(e)} 
               aria-label="delete" 
               className={clsx(classes.folderControlBtns, 
                 isActiveFolder && activeFolderId === id ? classes.inactiveFolderControlBtns : ''
@@ -71,32 +113,27 @@ class FolderListItem extends Component {
             </IconButton>
           </div>
         </li>
-      );
-    });
-
-    return (
-      <>
-        { items }
       </>
     );
   };
 };
 
-const mapStateToProps = ({ folders, activeFolderId }) => {
+const mapStateToProps = ({ folders, newFolderName, activeFolderId }) => {
   return {
     folders,
+    newFolderName,
     activeFolderId
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onDeleteFolder: (id, e) => dispatch(onDeleteFolder(id, e)),
-    onEditFolderName: (id) => dispatch(onEditFolderName(id)),
+    onDeleteFolder: (id) => dispatch(onDeleteFolder(id)),
+    onEditFolderName: (id, item) => dispatch(onEditFolderName(id, item)),
     getFolderName: (e) => dispatch(getFolderName(e)),
-    onAcceptFolderName: (id) => dispatch(onAcceptFolderName(id)),
+    onAcceptFolderName: (id, item) => dispatch(onAcceptFolderName(id, item)),
     onActiveFolder: (id) => dispatch(onActiveFolder(id))
   };
 };
 
-export default connect (mapStateToProps, mapDispatchToProps)(FolderListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(FolderListItem);
