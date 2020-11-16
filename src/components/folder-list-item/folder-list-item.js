@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 // Redux
 import { connect } from 'react-redux';
-import { onDeleteFolder, onEditFolderName, getFolderName, onAcceptFolderName } from '../../reducers/index';
+import { onDeleteFolder, onEditFolderName, getFolderName, onAcceptFolderName, onActiveFolder } from '../../reducers/index';
 
 // Material-UI
 import { IconButton } from '@material-ui/core';
@@ -12,35 +12,62 @@ import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-class FolderListItem extends Component {
+class FolderListItem extends Component {  
   render() {
-    const { classes, folders, onDeleteFolder, onEditFolderName, getFolderName, onAcceptFolderName } = this.props;
+    const { classes, folders, onDeleteFolder, onEditFolderName, getFolderName, onAcceptFolderName, onActiveFolder, activeFolderId } = this.props;
+    const activeFolder = folders.find((item) => item.edited === true);
+    const isActiveFolder = activeFolderId === null ? false : folders[folders.findIndex((item) => item.id === activeFolderId)].edited;
     
     const items = folders.map(item => {
       const { id, title } = item;
 
       return (
-        <li key={id} className={classes.folderListItem}>
+        <li 
+          onClick={() => onActiveFolder(id)}
+          key={id}
+          className={clsx(classes.inactiveFolderListItem, {
+              [classes.activeFolderListItem]: activeFolderId === id,
+              [classes.unclickableFolderListItem]: activeFolder ? activeFolder.id !== id : false
+          })}
+        >
           <input
             onChange={getFolderName}
             type="text"
-            id={`folderName${id}`}
-            className={classes.folderName}
+            className={isActiveFolder && activeFolderId === id ? classes.activeFolderName : classes.inactiveFolderName}
             defaultValue={title}
-            disabled
           />
 
-          <div className={classes.wrFolderBtns}>
-            <IconButton onClick={() => onAcceptFolderName(id)} id={`acceptFolderName${id}`} aria-label="edit" className={clsx(classes.editFolderNameBtn, classes.acceptNameBtn)}>
-              <CheckIcon className={classes.checkIcon}  />
+          <div className={classes.wrFolderControlBtns}>
+            <IconButton 
+              onClick={() => onAcceptFolderName(id)}  
+              aria-label="check" 
+              className={clsx(classes.folderControlBtns, 
+                isActiveFolder && activeFolderId === id 
+                  ? classes.activeAcceptFolderNameBtn 
+                  : classes.inActiveAcceptFolderNameBtn
+              )}
+            >
+              <CheckIcon className={classes.folderBtnsIncons}  />
             </IconButton>
 
-            <IconButton onClick={() => onEditFolderName(id)} id={`editFolderName${id}`} aria-label="edit" className={classes.editFolderNameBtn}>
-              <EditIcon className={classes.editIcon} />
+            <IconButton 
+              onClick={() => onEditFolderName(id)} 
+              aria-label="edit" 
+              className={clsx(classes.folderControlBtns, 
+                isActiveFolder && activeFolderId === id ? classes.inactiveFolderControlBtns : ''
+              )}
+            >
+              <EditIcon className={classes.folderBtnsIncons} />
             </IconButton>
 
-            <IconButton onClick={() => onDeleteFolder(id)} id={`deleteFolderName${id}`} aria-label="delete" className={classes.deleteFolderNameBtn}>
-              <DeleteIcon className={classes.deleteIcon} />
+            <IconButton 
+              onClick={(e) => onDeleteFolder(id, e)} 
+              aria-label="delete" 
+              className={clsx(classes.folderControlBtns, 
+                isActiveFolder && activeFolderId === id ? classes.inactiveFolderControlBtns : ''
+              )}
+            >
+              <DeleteIcon className={classes.folderBtnsIncons} />
             </IconButton>
           </div>
         </li>
@@ -48,25 +75,27 @@ class FolderListItem extends Component {
     });
 
     return (
-      <React.Fragment>
-        {items}
-      </React.Fragment>
+      <>
+        { items }
+      </>
     );
   };
 };
 
-const mapStateToProps = ({ folders }) => {
+const mapStateToProps = ({ folders, activeFolderId }) => {
   return {
-    folders
+    folders,
+    activeFolderId
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onDeleteFolder: (id) => dispatch(onDeleteFolder(id)),
+    onDeleteFolder: (id, e) => dispatch(onDeleteFolder(id, e)),
     onEditFolderName: (id) => dispatch(onEditFolderName(id)),
-    getFolderName: (event) => dispatch(getFolderName(event)),
-    onAcceptFolderName: (id) => dispatch(onAcceptFolderName(id))
+    getFolderName: (e) => dispatch(getFolderName(e)),
+    onAcceptFolderName: (id) => dispatch(onAcceptFolderName(id)),
+    onActiveFolder: (id) => dispatch(onActiveFolder(id))
   };
 };
 

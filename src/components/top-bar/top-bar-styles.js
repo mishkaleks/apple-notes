@@ -26,6 +26,18 @@ const useStyles = makeStyles(theme => ({
   },
   сreateNewFolderIcon: {
     color: '#fff'
+  },
+  inactiveCreateNewNoteBtn: {
+    pointerEvents: 'none'
+  },
+  activeCreateNewNoteBtn: {
+    pointerEvents: 'auto',
+  },
+  inactiveNoteAddIcon: {
+    opacity: '0.9'  
+  },
+  activeNoteAddIcon: {
+    color: '#fff'
   }
 }));
 

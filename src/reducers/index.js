@@ -1,6 +1,7 @@
 const initialState = {
   folders: [],
-  newFolderName: ''
+  newFolderName: '',
+  activeFolderId: null
 };
 
 const ADD_FOLDER_TO_NOTES = 'ADD_FOLDER_TO_NOTES';
@@ -8,6 +9,8 @@ const DELETE_FOLDER_TO_NOTES = 'DELETE_FOLDER_TO_NOTES';
 const EDIT_FOLDER_NAME_TO_NOTES = 'EDIT_FOLDER_NAME_TO_NOTES';
 const GET_FOLDER_NAME_TO_NOTES = 'GET_FOLDER_NAME_TO_NOTES';
 const ACCEPT_FOLDER_NAME_TO_NOTES = 'ACCEPT_FOLDER_NAME_TO_NOTES';
+const GET_ACTIVE_FOLDER_TO_NOTES = 'GET_ACTIVE_FOLDER_TO_NOTES';
+const ADD_NOTE_TO_FOLDER = 'ADD_NOTE_TO_FOLDER';
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -15,56 +18,76 @@ const reducer = (state = initialState, action) => {
       const id = state.folders.length === 0 ? 0 : state.folders[state.folders.length - 1].id + 1;
       const newFolder = {
         id,
-        title: `New Foolder ${id + 1}`
+        title: `New Foolder ${id + 1}`,
+        notes: [],
+        edited: false
       };
 
       return {
-        folders: [...state.folders, newFolder],
-        newFolderName: state.newFolderName
+        ...state,
+        folders: [...state.folders, newFolder]
       };
     case DELETE_FOLDER_TO_NOTES:
       const deleteId = state.folders.findIndex((item) => item.id === action.payload);
+      action.event.stopPropagation();
       
       return {
+        ...state,
         folders: [...state.folders.slice(0, deleteId), ...state.folders.slice(deleteId + 1)],
-        newFolderName: state.newFolderName
+        activeFolderId: null
       };
     case EDIT_FOLDER_NAME_TO_NOTES:
-      document.getElementById(`acceptFolderName${action.payload}`).style.display = 'block';
-      document.getElementById(`folderName${action.payload}`).removeAttribute('disabled', null);
-      document.getElementById(`folderName${action.payload}`).setAttribute('style', 'border: 1px solid #cfe8fc');
-      document.getElementById(`folderName${action.payload}`).focus();
-      document.getElementById(`editFolderName${action.payload}`).setAttribute('style', 'pointer-events: none; opacity: 0.3');
-      document.getElementById(`deleteFolderName${action.payload}`).setAttribute('style', 'pointer-events: none; opacity: 0.3');
+      const idEditedFolder = state.folders.findIndex((item) => item.id === action.payload);
+      const editedFolder = state.folders[idEditedFolder];
+      const updateEditedFolder = {
+        ...editedFolder,
+        edited: true
+      };
 
       return {
-        folders: state.folders,
-        newFolderName: state.newFolderName
+        ...state,
+        folders: [...state.folders.slice(0, idEditedFolder), updateEditedFolder, ...state.folders.slice(idEditedFolder + 1)]
       };
     case GET_FOLDER_NAME_TO_NOTES:
       return {
-        folders: state.folders,
+        ...state,
         newFolderName: action.payload
       };
     case ACCEPT_FOLDER_NAME_TO_NOTES:
       const oldFolderId = state.folders.findIndex((item) => item.id === action.payload);
       const oldFolder = state.folders[oldFolderId];
+      const newFolderName = state.newFolderName ? state.newFolderName : oldFolder.title;
       const updateFolder = {
         ...oldFolder,
-        title: state.newFolderName
-      }
-
-      document.getElementById(`acceptFolderName${action.payload}`).style.display = 'none';
-      document.getElementById(`folderName${action.payload}`).setAttribute('disabled', '');
-      document.getElementById(`folderName${action.payload}`).removeAttribute('style', '');
-      document.getElementById(`folderName${action.payload}`).blur();
-      document.getElementById(`editFolderName${action.payload}`).removeAttribute('style', '');
-      document.getElementById(`deleteFolderName${action.payload}`).removeAttribute('style', '');
+        title: newFolderName,
+        edited: !oldFolder.edited
+      };
 
       return {
+        ...state,
         folders: [...state.folders.slice(0, oldFolderId), updateFolder, ...state.folders.slice(oldFolderId + 1)],
-        newFolderName: state.newFolderName  
-      };  
+        newFolderName: ''
+      }; 
+    case GET_ACTIVE_FOLDER_TO_NOTES:
+      return {
+        ...state,
+        activeFolderId: action.payload
+      }; 
+    case ADD_NOTE_TO_FOLDER:
+      const idFolder = state.folders.findIndex((item) => item.id === state.activeFolderId);
+      const idNote = state.folders[idFolder].notes.length === 0 
+        ? 0 
+        : state.folders[idFolder].notes[state.folders[idFolder].notes.length - 1].id + 1;
+      const newNote = {
+        id: idNote,
+        title: `New Note ${idNote + 1}`,
+        content: ''
+      };
+    
+      return {
+        ...state,
+        folders: [...state.folders.map((item) => item.id === state.activeFolderId ? {...item, notes: [...item.notes, newNote]} : item)]
+      };
     default:
       return state;
   }
@@ -78,10 +101,11 @@ const onAddFolder = () => {
   };
 };
 
-const onDeleteFolder = (id) => {
+const onDeleteFolder = (id, e) => {
   return {
     type: 'DELETE_FOLDER_TO_NOTES',
-    payload: id
+    payload: id,
+    event: e
   };
 };
 
@@ -106,10 +130,25 @@ const onAcceptFolderName = (id) => {
   };
 };
 
+const onActiveFolder = (id) => {
+  return {
+    type: 'GET_ACTIVE_FOLDER_TO_NOTES',
+    payload: id
+  };
+};
+
+const onCreateNewNote = () => {
+  return {
+    type: 'ADD_NOTE_TO_FOLDER'
+  };
+};
+
 export {
   onAddFolder,
   onDeleteFolder,
   onEditFolderName,
   getFolderName,
-  onAcceptFolderName
+  onAcceptFolderName,
+  onActiveFolder,
+  onCreateNewNote
 };

@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 // Redux
 import { connect } from 'react-redux';
-import { onAddFolder } from '../../reducers/index';
+import { onAddFolder, onCreateNewNote } from '../../reducers/index';
 
 // Material-UI
 import { AppBar, Toolbar, IconButton, Typography } from '@material-ui/core';
@@ -15,7 +15,7 @@ import NoteAddIcon from '@material-ui/icons/NoteAdd';
 // Styles
 import useStyles from './top-bar-styles';
 
-const TopBar = ({ open, setOpen, onAddFolder }) => {
+const TopBar = ({ open, setOpen, onAddFolder, onCreateNewNote, activeFolderId }) => {
   const classes = useStyles();
   
   const handleDrawerOpen = () => {
@@ -45,8 +45,12 @@ const TopBar = ({ open, setOpen, onAddFolder }) => {
             <CreateNewFolderIcon className={classes.сreateNewFolderIcon} />
           </IconButton>
 
-          <IconButton aria-label="note add">
-            <NoteAddIcon />
+          <IconButton 
+            onClick={onCreateNewNote} 
+            aria-label="note add" 
+            className={activeFolderId === null ? classes.inactiveCreateNewNoteBtn : classes.activeCreateNewNoteBtn}
+          >
+            <NoteAddIcon className={activeFolderId === null ? classes.inactiveNoteAddIcon : classes.activeNoteAddIcon} />
           </IconButton>
         </Typography>
       </Toolbar>
@@ -54,10 +58,17 @@ const TopBar = ({ open, setOpen, onAddFolder }) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = ({ activeFolderId }) => {
   return {
-    onAddFolder: () => dispatch(onAddFolder())
+    activeFolderId
   };
 };
 
-export default connect (null, mapDispatchToProps)(TopBar);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAddFolder: () => dispatch(onAddFolder()),
+    onCreateNewNote: () => dispatch(onCreateNewNote())
+  };
+};
+
+export default connect (mapStateToProps, mapDispatchToProps)(TopBar);
