@@ -44,7 +44,7 @@ const StableDrawer = ({ open, setOpen }) => {
           )}
         </IconButton>  
       </div>
-      <FolderList />
+      <FolderList classes={classes} />
     </Drawer>
   );
 };

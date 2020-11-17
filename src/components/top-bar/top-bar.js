@@ -23,7 +23,15 @@ const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFo
   };
 
   const handleOnAddFolder = () => {
-    const id = folders.length === 0 ? 0 : folders[folders.length - 1].id + 1;
+    let maxIdFolders = 0;
+
+    for(let i=0; i<folders.length; i++) {
+      if(folders[i].id > maxIdFolders) {
+        maxIdFolders = folders[i].id;
+      }
+    }
+
+    const id = folders.length === 0 ? 0 : maxIdFolders + 1;
     const newFolder = {
       id,
       title: `New Foolder ${id + 1}`,

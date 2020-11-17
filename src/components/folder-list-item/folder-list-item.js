@@ -12,6 +12,9 @@ import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+// Beautiful DND
+import { Draggable } from "react-beautiful-dnd";
+
 class FolderListItem extends Component {  
 
   handleOnDeleteFolder = (e) => {
@@ -58,61 +61,83 @@ class FolderListItem extends Component {
     onActiveFolder(id);
   };
 
+  getItemStyle = (isDragging, draggableStyle) => ({
+    // Some basic styles to make the items look a bit nicer
+    userSelect: 'none',
+  
+    // Change background colour if dragging
+    background: isDragging ? '#3f51b5' : '',
+  
+    // Styles we need to apply on draggables
+    ...draggableStyle
+  });
+
   render() {
-    const { classes, folders, activeFolderId, id, title } = this.props;
+    const { classes, folders, activeFolderId, id, title, index } = this.props;
     const activeFolder = folders.find((item) => item.edited === true);
     const isActiveFolder = activeFolderId === null ? false : folders[folders.findIndex((item) => item.id === activeFolderId)].edited;
 
     return (
       <>
-        <li 
-          onClick={this.handleOnActiveFolder}
-          className={clsx(classes.inactiveFolderListItem, {
-              [classes.activeFolderListItem]: activeFolderId === id,
-              [classes.unclickableFolderListItem]: activeFolder ? activeFolder.id !== id : false
-          })}
-        >
-          <input
-            onChange={this.handleGetFolderName}
-            type="text"
-            className={isActiveFolder && activeFolderId === id ? classes.activeFolderName : classes.inactiveFolderName}
-            defaultValue={title}
-          />
-
-          <div className={classes.wrFolderControlBtns}>
-            <IconButton 
-              onClick={this.handleOnAcceptFolderName}  
-              aria-label="check" 
-              className={clsx(classes.folderControlBtns, 
-                isActiveFolder && activeFolderId === id 
-                  ? classes.activeAcceptFolderNameBtn 
-                  : classes.inActiveAcceptFolderNameBtn
+        <Draggable key={id} draggableId={`${id}`} index={index}>
+          {(provided, snapshot) => (
+            <li 
+              onClick={this.handleOnActiveFolder}
+              className={clsx(classes.inactiveFolderListItem, {
+                  [classes.activeFolderListItem]: activeFolderId === id,
+                  [classes.unclickableFolderListItem]: activeFolder ? activeFolder.id !== id : false
+              })}
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              style={this.getItemStyle(
+                snapshot.isDragging,
+                provided.draggableProps.style
               )}
             >
-              <CheckIcon className={classes.folderBtnsIncons}  />
-            </IconButton>
+              <input
+                onChange={this.handleGetFolderName}
+                type="text"
+                className={isActiveFolder && activeFolderId === id ? classes.activeFolderName : classes.inactiveFolderName}
+                defaultValue={title}
+              />
 
-            <IconButton 
-              onClick={this.handleOnEditFolderName} 
-              aria-label="edit" 
-              className={clsx(classes.folderControlBtns, 
-                isActiveFolder && activeFolderId === id ? classes.inactiveFolderControlBtns : ''
-              )}
-            >
-              <EditIcon className={classes.folderBtnsIncons} />
-            </IconButton>
+              <div className={classes.wrFolderControlBtns}>
+                <IconButton 
+                  onClick={this.handleOnAcceptFolderName}  
+                  aria-label="check" 
+                  className={clsx(classes.folderControlBtns, 
+                    isActiveFolder && activeFolderId === id 
+                      ? classes.activeAcceptFolderNameBtn 
+                      : classes.inActiveAcceptFolderNameBtn
+                  )}
+                >
+                  <CheckIcon className={classes.folderBtnsIncons}  />
+                </IconButton>
 
-            <IconButton 
-              onClick={(e) => this.handleOnDeleteFolder(e)} 
-              aria-label="delete" 
-              className={clsx(classes.folderControlBtns, 
-                isActiveFolder && activeFolderId === id ? classes.inactiveFolderControlBtns : ''
-              )}
-            >
-              <DeleteIcon className={classes.folderBtnsIncons} />
-            </IconButton>
-          </div>
-        </li>
+                <IconButton 
+                  onClick={this.handleOnEditFolderName} 
+                  aria-label="edit" 
+                  className={clsx(classes.folderControlBtns, 
+                    isActiveFolder && activeFolderId === id ? classes.inactiveFolderControlBtns : ''
+                  )}
+                >
+                  <EditIcon className={classes.folderBtnsIncons} />
+                </IconButton>
+
+                <IconButton 
+                  onClick={(e) => this.handleOnDeleteFolder(e)} 
+                  aria-label="delete" 
+                  className={clsx(classes.folderControlBtns, 
+                    isActiveFolder && activeFolderId === id ? classes.inactiveFolderControlBtns : ''
+                  )}
+                >
+                  <DeleteIcon className={classes.folderBtnsIncons} />
+                </IconButton>
+              </div>
+            </li>
+          )}
+        </Draggable>
       </>
     );
   };

@@ -140,7 +140,6 @@ const mapStateToProps = ({ folders, activeFolderId, activeNoteId, newNoteName })
   };
 };
 
-
 const mapDispatchToProps = {
   onDeleteNote,
   onEditNoteName,

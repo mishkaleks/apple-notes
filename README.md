@@ -43,6 +43,14 @@
 `$ npm i redux-logger`
 `> store.js // Настройка store`
 
+- Инициализация библиотеки react-beautiful-dnd для красивых перетаскиваний (drag and drop) элементов списка с каталогами.
+
+`$ npm install react-beautiful-dnd --save`
+
+Подключения пакетов:
+
+`import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';`
+
 **Остальные этапы создания приложения будут добавляться по мере развития проекта*.
 
 ## Скетч проекта
