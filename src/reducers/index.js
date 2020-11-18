@@ -20,6 +20,7 @@ const ACCEPT_NOTE_NAME_TO_FOLDER = 'ACCEPT_NOTE_NAME_TO_FOLDER';
 const GET_ACTIVE_NOTE_TO_FOLDER = 'GET_ACTIVE_NOTE_TO_FOLDER';
 const GET_CONTENT_TO_NOTE = 'GET_CONTENT_TO_NOTE';
 const REORDER_FOLDERS_TO_NOTES = 'REORDER_FOLDERS_TO_NOTES';
+const REORDER_NOTES_TO_FOLDER = 'REORDER_NOTES_TO_FOLDER';
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -124,6 +125,16 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         folders: action.list
+      };
+    case REORDER_NOTES_TO_FOLDER:
+      return {
+        ...state,
+        folders: [
+          ...state.folders.map((item) => item.id === state.activeFolderId
+            ? {...item, notes: action.list}
+            : item
+          )
+        ]
       };
     default:
       return state;
@@ -236,6 +247,13 @@ const onReorderFolders = (list) => {
   };
 };
 
+const onReorderNotes = (list) => {
+  return {
+    type: 'REORDER_NOTES_TO_FOLDER',
+    list
+  };
+};
+
 export {
   onAddFolder,
   onDeleteFolder,
@@ -250,5 +268,6 @@ export {
   onAcceptNoteName,
   onActiveNote,
   getNoteContent,
-  onReorderFolders
+  onReorderFolders,
+  onReorderNotes
 };

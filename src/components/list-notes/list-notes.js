@@ -4,6 +4,9 @@ import React from 'react';
 // Redux
 import { connect } from 'react-redux';
 
+// Beautiful DND
+import { Droppable } from "react-beautiful-dnd";
+
 // Components
 import ListNotesItem from '../list-notes-item/list-notes-item';
 
@@ -13,37 +16,47 @@ import { Box } from '@material-ui/core';
 // Styles
 import useStyles from './list-notes-styles';
 
-const NoteList = ({ folders, activeFolderId, activeNoteId }) => {
+const ListNotes = ({ folders, activeFolderId }) => {
   const classes = useStyles();
 
   return (
-    <Box className={classes.listNotes}>
-      {
-        activeFolderId === null
-          ? 'List of the notes' 
-          : folders[folders.findIndex((item) => item.id === activeFolderId)].notes.map(({ id, title }) => {
-        const idKey = `${activeFolderId}_${id}`;
+    <Droppable droppableId="droppableNote">
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+        >
+          <Box className={classes.listNotes}>
+            {
+              activeFolderId === null
+                ? 'List of the notes' 
+                : folders[folders.findIndex((item) => item.id === activeFolderId)].notes.map((item, index) => {
+              const idKey = `${activeFolderId}_${item.id}`;
 
-            return (
-              <ListNotesItem 
-                key={idKey}
-                classes={classes}
-                id={id}
-                title={title}
-              />
-            );
-          })
-      }
-    </Box>
+                  return (
+                    <ListNotesItem 
+                      key={idKey}
+                      classes={classes}
+                      id={item.id}
+                      title={item.title}
+                      index={index}
+                    />
+                  );
+                })
+            }
+          </Box>
+          {provided.placeholder}
+        </div>
+      )}
+    </Droppable>
   );
 };
 
-const mapStateToProps = ({ folders, activeFolderId, activeNoteId }) => {
+const mapStateToProps = ({ folders, activeFolderId }) => {
   return {
     folders,
-    activeFolderId,
-    activeNoteId
+    activeFolderId
   };
 };
 
-export default connect(mapStateToProps, null)(NoteList);
+export default connect(mapStateToProps, null)(ListNotes);

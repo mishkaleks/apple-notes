@@ -66,7 +66,7 @@ class FolderListItem extends Component {
     userSelect: 'none',
   
     // Change background colour if dragging
-    background: isDragging ? '#3f51b5' : '',
+    background: isDragging ? '#A5B9C9' : '',
   
     // Styles we need to apply on draggables
     ...draggableStyle
@@ -79,7 +79,7 @@ class FolderListItem extends Component {
 
     return (
       <>
-        <Draggable key={id} draggableId={`${id}`} index={index}>
+        <Draggable draggableId={`folder_${id}`} index={index}>
           {(provided, snapshot) => (
             <li 
               onClick={this.handleOnActiveFolder}

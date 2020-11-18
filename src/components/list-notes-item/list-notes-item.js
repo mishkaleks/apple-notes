@@ -6,6 +6,9 @@ import clsx from 'clsx';
 import { connect } from 'react-redux';
 import { onDeleteNote, onEditNoteName, getNoteName, onAcceptNoteName, onActiveNote } from '../../reducers/index';
 
+// Beautiful DND
+import { Draggable } from "react-beautiful-dnd";
+
 // Material-UI
 import { IconButton } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
@@ -61,8 +64,19 @@ class ListNotesItem extends Component {
     onActiveNote(id);
   };
 
+  getItemStyle = (isDragging, draggableStyle) => ({
+    // Some basic styles to make the items look a bit nicer
+    userSelect: 'none',
+  
+    // Change background colour if dragging
+    background: isDragging ? '#A5B9C9' : '',
+  
+    // Styles we need to apply on draggables
+    ...draggableStyle
+  });
+
   render() {
-    const { classes, folders, activeFolderId, activeNoteId, id, title } = this.props;
+    const { classes, folders, activeFolderId, activeNoteId, id, title, index } = this.props;
     const activeNote = activeNoteId === null ? false : folders[folders.findIndex((item) => item.id === activeFolderId)].notes.find((item) => item.edited === true);
     const isActiveNote = activeNoteId === null
       ? false 
@@ -70,63 +84,74 @@ class ListNotesItem extends Component {
         .notes[folders[folders.findIndex((item) => item.id === activeFolderId)].notes.findIndex((item) => item.id === activeNoteId)].edited;
 
     return (
-      <li 
-        onClick={this.handleOnActiveNote}
-        className={clsx(classes.inactiveNoteListItem, {
-          [classes.activeNoteListItem]: activeNoteId === id,
-          [classes.unclickableNoteListItem]: activeNote ? activeNote.id !== id : false
-        })}
-      >
-      <input
-        onChange={this.handleGetNoteName}
-        type="text"
-        className={clsx(
-          isActiveNote && activeNoteId === id ? classes.activeNoteName : classes.inactiveNoteName,
-          activeNoteId === id ? classes.activeNoteNameText : ''
+      <Draggable draggableId={`note_${id}`} index={index}>
+        {(provided, snapshot) => (
+          <li 
+            onClick={this.handleOnActiveNote}
+            className={clsx(classes.inactiveNoteListItem, {
+              [classes.activeNoteListItem]: activeNoteId === id,
+              [classes.unclickableNoteListItem]: activeNote ? activeNote.id !== id : false
+            })}
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            style={this.getItemStyle(
+              snapshot.isDragging,
+              provided.draggableProps.style
+            )}
+          >
+            <input
+              onChange={this.handleGetNoteName}
+              type="text"
+              className={clsx(
+                isActiveNote && activeNoteId === id ? classes.activeNoteName : classes.inactiveNoteName,
+                activeNoteId === id ? classes.activeNoteNameText : ''
+              )}
+              defaultValue={title}
+            />
+
+            <div className={classes.wrNoteControlBtns}>
+              <IconButton 
+                onClick={this.handleOnAcceptNoteName}
+                aria-label="check"
+                className={clsx(classes.noteControlBtns,
+                  isActiveNote && activeNoteId === id 
+                    ? classes.activeAcceptNoteNameBtn
+                    : classes.inactiveAcceptNoteNameBtn
+                )}
+              >
+              <CheckIcon className={clsx(classes.noteBtnsIncons,
+                activeNoteId === id ? classes.inactiveNoteBtnsIncons : ''
+              )} />
+              </IconButton>
+
+              <IconButton
+                onClick={this.handleOnEditNoteName}
+                aria-label="edit"
+                className={clsx(classes.noteControlBtns,
+                  isActiveNote && activeNoteId === id ? classes.inactiveNoteControlBtns : ''  
+                )}  
+              >
+              <EditIcon className={clsx(classes.noteBtnsIncons,
+                activeNoteId === id ? classes.inactiveNoteBtnsIncons : ''
+              )} />
+              </IconButton>
+
+              <IconButton
+                onClick={(e) => this.handleOnDeleteNote(e)}
+                aria-label="delete"
+                className={clsx(classes.noteControlBtns,
+                  isActiveNote && activeNoteId === id ? classes.inactiveNoteControlBtns : ''  
+                )}
+              >
+              <DeleteIcon className={clsx(classes.noteBtnsIncons,
+                activeNoteId === id ? classes.inactiveNoteBtnsIncons : ''
+              )} />
+              </IconButton>
+            </div>
+          </li>
         )}
-        defaultValue={title}
-      />
-
-      <div className={classes.wrNoteControlBtns}>
-        <IconButton 
-          onClick={this.handleOnAcceptNoteName}
-          aria-label="check"
-          className={clsx(classes.noteControlBtns,
-            isActiveNote && activeNoteId === id 
-              ? classes.activeAcceptNoteNameBtn
-              : classes.inactiveAcceptNoteNameBtn
-          )}
-        >
-        <CheckIcon className={clsx(classes.noteBtnsIncons,
-          activeNoteId === id ? classes.inactiveNoteBtnsIncons : ''
-        )} />
-        </IconButton>
-
-        <IconButton
-          onClick={this.handleOnEditNoteName}
-          aria-label="edit"
-          className={clsx(classes.noteControlBtns,
-            isActiveNote && activeNoteId === id ? classes.inactiveNoteControlBtns : ''  
-          )}  
-        >
-        <EditIcon className={clsx(classes.noteBtnsIncons,
-          activeNoteId === id ? classes.inactiveNoteBtnsIncons : ''
-        )} />
-        </IconButton>
-
-        <IconButton
-          onClick={(e) => this.handleOnDeleteNote(e)}
-          aria-label="delete"
-          className={clsx(classes.noteControlBtns,
-            isActiveNote && activeNoteId === id ? classes.inactiveNoteControlBtns : ''  
-          )}
-        >
-        <DeleteIcon className={clsx(classes.noteBtnsIncons,
-          activeNoteId === id ? classes.inactiveNoteBtnsIncons : ''
-        )} />
-        </IconButton>
-      </div>
-      </li>
+      </Draggable>
     );
   };
 };
