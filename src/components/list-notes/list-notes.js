@@ -31,11 +31,10 @@ const ListNotes = ({ folders, activeFolderId }) => {
               activeFolderId === null
                 ? 'List of the notes' 
                 : folders[folders.findIndex((item) => item.id === activeFolderId)].notes.map((item, index) => {
-              const idKey = `${activeFolderId}_${item.id}`;
 
                   return (
                     <ListNotesItem 
-                      key={idKey}
+                      key={item.id}
                       classes={classes}
                       id={item.id}
                       title={item.title}

@@ -84,7 +84,7 @@ class ListNotesItem extends Component {
         .notes[folders[folders.findIndex((item) => item.id === activeFolderId)].notes.findIndex((item) => item.id === activeNoteId)].edited;
 
     return (
-      <Draggable draggableId={`note_${id}`} index={index}>
+      <Draggable draggableId={`${id}`} index={index}>
         {(provided, snapshot) => (
           <li 
             onClick={this.handleOnActiveNote}

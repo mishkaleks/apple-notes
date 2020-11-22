@@ -36,7 +36,8 @@ const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFo
       id,
       title: `New Foolder ${id + 1}`,
       notes: [],
-      edited: false
+      edited: false,
+      countNotes: 0
     };
 
     onAddFolder(newFolder);
@@ -44,12 +45,10 @@ const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFo
 
   const handleOnCreateNewNote = () => {
     const idFolder = folders.findIndex((item) => item.id === activeFolderId);
-    const idNote = folders[idFolder].notes.length === 0 
-      ? 0 
-      : folders[idFolder].notes[folders[idFolder].notes.length - 1].id + 1;
+    const idNote = `${activeFolderId}_${folders[idFolder].countNotes}`;
     const newNote = {
       id: idNote,
-      title: `New Note ${idNote + 1}`,
+      title: `New Note`,
       content: 'Add description to note',
       edited: false
     };

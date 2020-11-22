@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 // Redux
 import { connect } from 'react-redux';
-import { onReorderFolders, onReorderNotes } from '../../reducers/index';
+import { onReorderFolders, onReorderNotes, onMoveAndReorder } from '../../reducers/index';
 
 // Material-UI
 import { CssBaseline, Box } from '@material-ui/core';
@@ -35,21 +35,48 @@ function PersistentDrawerLeft(props) {
     return result;
   };
 
+  const moveAndReorder = (listF, listN, startIndex, endIndex, activeFolderId) => {
+    const result = Array.from(listF);
+    const workListNActiveF = Array.from(listN);
+    const [removedN] = workListNActiveF.splice(startIndex, 1);
+
+    const workListNInactiveF = Array.from(listF[listF.findIndex((item) => item.id === Number(endIndex))].notes);
+    workListNInactiveF.push(removedN);
+    Array.prototype.splice.apply(result[result.findIndex((item) => item.id === Number(endIndex))].notes, [0, workListNInactiveF.length].concat(workListNInactiveF));
+    result[result.findIndex((item) => item.id === activeFolderId)].notes.splice(startIndex, 1);
+    result[result.findIndex((item) => item.id === activeFolderId)].notes.splice(Number(endIndex), 0);
+
+    return result;
+  };
+
   const onDragEnd = (result) => {
-    const { folders, activeFolderId, onReorderFolders, onReorderNotes } = props;
+    const { folders, activeFolderId, onReorderFolders, onReorderNotes, onMoveAndReorder } = props;
     let reorderList = null;
+
+    // Move a note to another folder
+    if (result.combine !== null && result.combine.droppableId === 'droppableFolder' && result.combine.draggableId && result.source.droppableId === 'droppableNote') {
+      reorderList = moveAndReorder(
+        folders,
+        folders[folders.findIndex((item) => item.id === activeFolderId)].notes,
+        result.source.index,
+        result.combine.draggableId,
+        activeFolderId
+      );
+
+      onMoveAndReorder(reorderList);
+    }
 
     // Dropped outside the list
     if (!result.destination) return;
 
     // Sorting folders
-    if(result.source.droppableId === 'droppableFolder' && result.destination.droppableId === 'droppableFolder') {
+    if (result.source.droppableId === 'droppableFolder' && result.destination.droppableId === 'droppableFolder') {
       reorderList = reorder(folders, result.source.index, result.destination.index);
       onReorderFolders(reorderList);
     }
     
     // Sorting notes
-    if(result.source.droppableId === 'droppableNote' && result.destination.droppableId === 'droppableNote') {
+    if (result.source.droppableId === 'droppableNote' && result.destination.droppableId === 'droppableNote') {
       reorderList = reorder(folders[folders.findIndex((item) => item.id === activeFolderId)].notes, result.source.index, result.destination.index);
       onReorderNotes(reorderList);
     }
@@ -84,7 +111,8 @@ const mapStateToProps = ({ folders, activeFolderId }) => {
 
 const mapDispatchToProps = {
   onReorderFolders,
-  onReorderNotes
+  onReorderNotes,
+  onMoveAndReorder
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersistentDrawerLeft);

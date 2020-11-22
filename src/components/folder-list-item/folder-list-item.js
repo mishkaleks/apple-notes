@@ -79,7 +79,7 @@ class FolderListItem extends Component {
 
     return (
       <>
-        <Draggable draggableId={`folder_${id}`} index={index}>
+        <Draggable draggableId={`${id}`} index={index}>
           {(provided, snapshot) => (
             <li 
               onClick={this.handleOnActiveFolder}

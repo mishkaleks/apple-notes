@@ -15,7 +15,7 @@ class FolderList extends Component {
     const { classes, folders } = this.props;
 
     return (
-      <Droppable droppableId="droppableFolder">
+      <Droppable droppableId="droppableFolder" isCombineEnabled >
         {(provided) => (
           <div
             ref={provided.innerRef}
