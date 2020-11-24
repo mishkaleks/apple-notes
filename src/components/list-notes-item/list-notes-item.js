@@ -4,10 +4,7 @@ import clsx from 'clsx';
 
 // Redux
 import { connect } from 'react-redux';
-import { onDeleteNote, onEditNoteName, getNoteName, onAcceptNoteName, onActiveNote } from '../../reducers/index';
-
-// Beautiful DND
-import { Draggable } from "react-beautiful-dnd";
+import { onEditNoteName, getNoteName, onAcceptNoteName, onActiveNote, onOpenModal } from '../../reducers/index';
 
 // Material-UI
 import { IconButton } from '@material-ui/core';
@@ -15,15 +12,18 @@ import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+// Beautiful DND
+import { Draggable } from "react-beautiful-dnd";
+
 class ListNotesItem extends Component {
 
   handleOnDeleteNote = (e) => {
-    const { folders, activeFolderId, onDeleteNote, id } = this.props;
+    const { folders, activeFolderId, id, onOpenModal } = this.props;
     const actFolderId = folders.findIndex((item) => item.id === activeFolderId);
     const deleteNoteId = folders[actFolderId].notes.findIndex((item) => item.id === id);
 
     e.stopPropagation();
-    onDeleteNote(deleteNoteId);
+    onOpenModal(deleteNoteId, 'note');
   };
   
   handleOnEditNoteName = () => {
@@ -60,7 +60,7 @@ class ListNotesItem extends Component {
 
   handleOnActiveNote = () => {
     const { onActiveNote, id } = this.props;
-
+    
     onActiveNote(id);
   };
 
@@ -166,11 +166,11 @@ const mapStateToProps = ({ folders, activeFolderId, activeNoteId, newNoteName })
 };
 
 const mapDispatchToProps = {
-  onDeleteNote,
   onEditNoteName,
   getNoteName,
   onAcceptNoteName,
-  onActiveNote
+  onActiveNote,
+  onOpenModal
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListNotesItem);

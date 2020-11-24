@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 // Redux
 import { connect } from 'react-redux';
-import { onDeleteFolder, onEditFolderName, getFolderName, onAcceptFolderName, onActiveFolder } from '../../reducers/index';
+import { onEditFolderName, getFolderName, onAcceptFolderName, onActiveFolder, onOpenModal } from '../../reducers/index';
 
 // Material-UI
 import { IconButton } from '@material-ui/core';
@@ -18,11 +18,11 @@ import { Draggable } from "react-beautiful-dnd";
 class FolderListItem extends Component {  
 
   handleOnDeleteFolder = (e) => {
-    const { folders, onDeleteFolder, id } = this.props;
+    const { folders, id, onOpenModal } = this.props;
     const deleteId = folders.findIndex((item) => item.id === id);
 
     e.stopPropagation();
-    onDeleteFolder(deleteId);
+    onOpenModal(deleteId, 'folder');
   };
 
   handleOnEditFolderName = () => {
@@ -57,7 +57,7 @@ class FolderListItem extends Component {
 
   handleOnActiveFolder = () => {
     const { onActiveFolder, id } = this.props;
-     
+    
     onActiveFolder(id);
   };
 
@@ -154,11 +154,11 @@ const mapStateToProps = ({ folders, newFolderName, activeFolderId, activeNoteId,
 };
 
 const mapDispatchToProps = {
-    onDeleteFolder,
     onEditFolderName,
     getFolderName,
     onAcceptFolderName,
-    onActiveFolder
+    onActiveFolder,
+    onOpenModal
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FolderListItem);

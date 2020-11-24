@@ -4,14 +4,14 @@ import React from 'react';
 // Redux
 import { connect } from 'react-redux';
 
+// Material-UI
+import { Box } from '@material-ui/core';
+
 // Beautiful DND
 import { Droppable } from "react-beautiful-dnd";
 
 // Components
 import ListNotesItem from '../list-notes-item/list-notes-item';
-
-// Material-UI
-import { Box } from '@material-ui/core';
 
 // Styles
 import useStyles from './list-notes-styles';

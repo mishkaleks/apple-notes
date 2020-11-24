@@ -17,6 +17,7 @@ import TopBar from '../top-bar/top-bar';
 import StableDrawer from '../stable-drawer/stable-drawer';
 import ListNotes from '../list-notes/list-notes';
 import NoteContent from '../note-content/note-content';
+import ModalWindow from '../helpers/modal-window';
 
 // Styles
 import useStyles from './app-styles';
@@ -24,6 +25,7 @@ import useStyles from './app-styles';
 function PersistentDrawerLeft(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+  const { isOpen } = props;
 
   const reorder = (list, startIndex, endIndex) => {   
     const result = Array.from(list);
@@ -51,33 +53,33 @@ function PersistentDrawerLeft(props) {
 
   const onDragEnd = (result) => {
     const { folders, activeFolderId, onReorderFolders, onReorderNotes, onMoveAndReorder } = props;
+    const { combine, source, destination } = result;
     let reorderList = null;
 
     // Move a note to another folder
-    if (result.combine !== null && result.combine.droppableId === 'droppableFolder' && result.combine.draggableId && result.source.droppableId === 'droppableNote') {
+    if (combine !== null && combine.droppableId === 'droppableFolder' && combine.draggableId && source.droppableId === 'droppableNote') {
       reorderList = moveAndReorder(
         folders,
         folders[folders.findIndex((item) => item.id === activeFolderId)].notes,
-        result.source.index,
-        result.combine.draggableId,
+        source.index,
+        combine.draggableId,
         activeFolderId
       );
-
       onMoveAndReorder(reorderList);
     }
 
     // Dropped outside the list
-    if (!result.destination) return;
+    if (!destination) return;
 
     // Sorting folders
-    if (result.source.droppableId === 'droppableFolder' && result.destination.droppableId === 'droppableFolder') {
-      reorderList = reorder(folders, result.source.index, result.destination.index);
+    if (source.droppableId === 'droppableFolder' && destination.droppableId === 'droppableFolder') {
+      reorderList = reorder(folders, source.index, destination.index);
       onReorderFolders(reorderList);
     }
     
     // Sorting notes
-    if (result.source.droppableId === 'droppableNote' && result.destination.droppableId === 'droppableNote') {
-      reorderList = reorder(folders[folders.findIndex((item) => item.id === activeFolderId)].notes, result.source.index, result.destination.index);
+    if (source.droppableId === 'droppableNote' && destination.droppableId === 'droppableNote') {
+      reorderList = reorder(folders[folders.findIndex((item) => item.id === activeFolderId)].notes, source.index, destination.index);
       onReorderNotes(reorderList);
     }
   };
@@ -96,16 +98,18 @@ function PersistentDrawerLeft(props) {
             <ListNotes />
             <NoteContent classes={classes} />    
           </Box>
-        </main>    
+        </main>
+        <ModalWindow isOpen={isOpen} />    
       </div>
     </DragDropContext>
   );
 };
 
-const mapStateToProps = ({ folders, activeFolderId }) => {
+const mapStateToProps = ({ folders, activeFolderId, isOpen }) => {
   return {
     folders,
-    activeFolderId
+    activeFolderId,
+    isOpen
   };
 };
 

@@ -3,7 +3,10 @@ const initialState = {
   newFolderName: '',
   activeFolderId: null,
   newNoteName: '',
-  activeNoteId: null
+  activeNoteId: null,
+  isOpen: false,
+  typeModal: '',
+  deleteIdForModal: null
 };
 
 const ADD_FOLDER_TO_NOTES = 'ADD_FOLDER_TO_NOTES';
@@ -22,6 +25,8 @@ const GET_CONTENT_TO_NOTE = 'GET_CONTENT_TO_NOTE';
 const REORDER_FOLDERS_TO_NOTES = 'REORDER_FOLDERS_TO_NOTES';
 const REORDER_NOTES_TO_FOLDER = 'REORDER_NOTES_TO_FOLDER';
 const MOVE_AND_REORDER_NOTES = 'MOVE_AND_REORDER_NOTES';
+const CLOSE_MODAL_WINDOW = 'CLOSE_MODAL_WINDOW';
+const OPEN_MODAL_WINDOW = 'OPEN_MODAL_WINDOW';
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -33,9 +38,10 @@ const reducer = (state = initialState, action) => {
     case DELETE_FOLDER_TO_NOTES:
       return {
         ...state,
-        folders: [...state.folders.slice(0, action.id), ...state.folders.slice(action.id + 1)],
+        folders: [...state.folders.slice(0, state.deleteIdForModal), ...state.folders.slice(state.deleteIdForModal + 1)],
         activeFolderId: null,
-        activeNoteId: null
+        activeNoteId: null,
+        deleteIdForModal: null
       };
     case EDIT_FOLDER_NAME_TO_NOTES:
       return {
@@ -74,11 +80,12 @@ const reducer = (state = initialState, action) => {
         ...state,
         folders: [
           ...state.folders.map((item) => item.id === state.activeFolderId 
-            ? {...item, notes: [...item.notes.slice(0, action.id), ...item.notes.slice(action.id + 1)]} 
+            ? {...item, notes: [...item.notes.slice(0, state.deleteIdForModal), ...item.notes.slice(state.deleteIdForModal + 1)]} 
             : item
           )
         ],
-        activeNoteId: null
+        activeNoteId: null,
+        deleteIdForModal: null
       };
     case EDIT_NOTE_NAME_TO_FOLDER:
       return {
@@ -143,6 +150,19 @@ const reducer = (state = initialState, action) => {
         folders: action.list,
         activeNoteId: null
       };
+    case OPEN_MODAL_WINDOW:
+      return {
+        ...state,
+        isOpen: !state.isOpen,
+        typeModal: action.flag,
+        deleteIdForModal: action.id
+      };
+    case CLOSE_MODAL_WINDOW:
+      return {
+        ...state,
+        isOpen: !state.isOpen,
+        typeModal: ''
+      };
     default:
       return state;
   }
@@ -157,10 +177,9 @@ const onAddFolder = (item) => {
   };
 };
 
-const onDeleteFolder = (id) => {
+const onDeleteFolder = () => {
   return {
-    type: 'DELETE_FOLDER_TO_NOTES',
-    id
+    type: 'DELETE_FOLDER_TO_NOTES'
   };
 };
 
@@ -201,10 +220,9 @@ const onCreateNewNote = (item) => {
   };
 };
 
-const onDeleteNote = (id) => {
+const onDeleteNote = () => {
   return {
-    type: 'DELETE_NOTE_TO_FOLDER',
-    id
+    type: 'DELETE_NOTE_TO_FOLDER'
   };
 };
 
@@ -268,6 +286,20 @@ const onMoveAndReorder = (list) => {
   };
 };
 
+const onOpenModal = (id, flag) => {
+  return {
+    type: 'OPEN_MODAL_WINDOW',
+    id,
+    flag
+  };
+};
+
+const onCloseModal = () => {
+  return {
+    type: 'CLOSE_MODAL_WINDOW'
+  }
+};
+
 export {
   onAddFolder,
   onDeleteFolder,
@@ -284,5 +316,7 @@ export {
   getNoteContent,
   onReorderFolders,
   onReorderNotes,
-  onMoveAndReorder
+  onMoveAndReorder,
+  onOpenModal,
+  onCloseModal
 };
