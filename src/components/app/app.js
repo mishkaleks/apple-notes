@@ -1,6 +1,7 @@
 // Base
 import React from 'react';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
@@ -117,6 +118,14 @@ const mapDispatchToProps = {
   onReorderFolders,
   onReorderNotes,
   onMoveAndReorder
+};
+
+PersistentDrawerLeft.propTypes = {
+  folders: PropTypes.array,
+  activeFolderId: PropTypes.number,
+  onReorderFolders: PropTypes.func,
+  onReorderNotes: PropTypes.func,
+  onMoveAndReorder: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersistentDrawerLeft);

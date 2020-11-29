@@ -1,6 +1,7 @@
 // Base
 import React from 'react';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
@@ -104,6 +105,13 @@ const mapDispatchToProps = (dispatch) => {
     onAddFolder: (item) => dispatch(onAddFolder(item)),
     onCreateNewNote: (item) => dispatch(onCreateNewNote(item))
   };
+};
+
+TopBar.propTypes = {
+  folders: PropTypes.array,
+  onAddFolder: PropTypes.func,
+  onCreateNewNote: PropTypes.func,
+  activeFolderId: PropTypes.number
 };
 
 export default connect (mapStateToProps, mapDispatchToProps)(TopBar); 

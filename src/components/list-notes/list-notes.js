@@ -1,5 +1,6 @@
 // Base
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
@@ -56,6 +57,11 @@ const mapStateToProps = ({ folders, activeFolderId }) => {
     folders,
     activeFolderId
   };
+};
+
+ListNotes.propTypes = {
+  folders: PropTypes.array,
+  activeFolderId: PropTypes.number
 };
 
 export default connect(mapStateToProps, null)(ListNotes);

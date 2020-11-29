@@ -1,6 +1,7 @@
 // Base
 import React, { Component } from 'react';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
@@ -16,6 +17,22 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Draggable } from "react-beautiful-dnd";
 
 class ListNotesItem extends Component {
+
+  static propTypes = {
+    folders: PropTypes.array,
+    activeFolderId: PropTypes.number,
+    activeNoteId: PropTypes.string,
+    id: PropTypes.string,
+    title: PropTypes.string,
+    index: PropTypes.number,
+    onOpenModal: PropTypes.func,
+    onEditNoteName: PropTypes.func,
+    updateEditedNote: PropTypes.func,
+    getNoteName: PropTypes.func,
+    newNoteName: PropTypes.string,
+    onAcceptNoteName: PropTypes.func,
+    onActiveNote: PropTypes.func
+  };
 
   handleOnDeleteNote = (e) => {
     const { folders, activeFolderId, id, onOpenModal } = this.props;

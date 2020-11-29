@@ -1,6 +1,7 @@
 // Base
 import React from 'react';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
 
 // React
 import { connect } from 'react-redux';
@@ -78,5 +79,12 @@ const mapDispatchToProps = {
   onDeleteNote,
   onCloseModal
 }
+
+ModalWindow.propTypes = {
+  typeModal: PropTypes.string,
+  onDeleteFolder: PropTypes.func,
+  onDeleteNote: PropTypes.func,
+  onCloseModal: PropTypes.func
+};
  
 export default connect(mapStateToProps, mapDispatchToProps)(ModalWindow);

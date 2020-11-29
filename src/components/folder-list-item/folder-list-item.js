@@ -1,6 +1,7 @@
 // Base
 import React, { Component } from 'react';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
@@ -16,6 +17,18 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Draggable } from "react-beautiful-dnd";
 
 class FolderListItem extends Component {  
+
+  static propTypes = {
+    folders: PropTypes.array,
+    activeFolderId: PropTypes.number,
+    id: PropTypes.number,
+    title: PropTypes.string,
+    index: PropTypes.number,
+    onEditFolderName: PropTypes.func,
+    newFolderName: PropTypes.string,
+    onAcceptFolderName: PropTypes.func,
+    onActiveFolder: PropTypes.func
+  };
 
   handleOnDeleteFolder = (e) => {
     const { folders, id, onOpenModal } = this.props;

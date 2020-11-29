@@ -1,5 +1,6 @@
 // Base
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
@@ -11,6 +12,11 @@ import { Droppable } from "react-beautiful-dnd";
 import FolderListItem from '../folder-list-item/folder-list-item';
 
 class FolderList extends Component {
+
+  static propTypes = {
+    folders: PropTypes.array
+  };
+
   render() {
     const { classes, folders } = this.props;
 

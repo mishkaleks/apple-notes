@@ -1,5 +1,6 @@
 // Base
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
@@ -9,6 +10,13 @@ import { getNoteContent } from '../../reducers/index';
 import { Box } from '@material-ui/core';
 
 class NoteContent extends Component {
+
+  static propTypes = {
+    folders: PropTypes.array,
+    activeFolderId: PropTypes.number,
+    activeNoteId: PropTypes.string,
+    getNoteContent: PropTypes.func
+  };
 
   handleGetNoteContent = (e) => {
     const { folders, activeFolderId, activeNoteId, getNoteContent } = this.props;
