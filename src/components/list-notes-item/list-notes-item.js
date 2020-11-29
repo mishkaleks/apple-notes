@@ -12,6 +12,7 @@ import { IconButton } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Box from '@material-ui/core/Box';
 
 // Beautiful DND
 import { Draggable } from "react-beautiful-dnd";
@@ -24,6 +25,7 @@ class ListNotesItem extends Component {
     activeNoteId: PropTypes.string,
     id: PropTypes.string,
     title: PropTypes.string,
+    startTime: PropTypes.string,
     index: PropTypes.number,
     onOpenModal: PropTypes.func,
     onEditNoteName: PropTypes.func,
@@ -93,7 +95,7 @@ class ListNotesItem extends Component {
   });
 
   render() {
-    const { classes, folders, activeFolderId, activeNoteId, id, title, index } = this.props;
+    const { classes, folders, activeFolderId, activeNoteId, id, title, startTime, index } = this.props;
     const activeNote = activeNoteId === null ? false : folders[folders.findIndex((item) => item.id === activeFolderId)].notes.find((item) => item.edited === true);
     const isActiveNote = activeNoteId === null
       ? false 
@@ -117,15 +119,24 @@ class ListNotesItem extends Component {
               provided.draggableProps.style
             )}
           >
-            <input
-              onChange={this.handleGetNoteName}
-              type="text"
-              className={clsx(
-                isActiveNote && activeNoteId === id ? classes.activeNoteName : classes.inactiveNoteName,
-                activeNoteId === id ? classes.activeNoteNameText : ''
-              )}
-              defaultValue={title}
-            />
+            <Box className={classes.wrNoteName}>
+              <input
+                onChange={this.handleGetNoteName}
+                type="text"
+                className={clsx(
+                  isActiveNote && activeNoteId === id ? classes.activeNoteName : classes.inactiveNoteName,
+                  activeNoteId === id ? classes.activeNoteNameText : ''
+                )}
+                defaultValue={title}
+              />
+              <Box
+                component="span"
+                className={clsx(classes.timeCreation,
+                  activeNoteId === id ? classes.inactiveTimeCreation : '')}
+              >
+                { startTime }
+              </Box>
+            </Box>
 
             <div className={classes.wrNoteControlBtns}>
               <IconButton 

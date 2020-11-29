@@ -26,6 +26,9 @@ const useStyles = makeStyles(theme => ({
     '&:hover $inactiveNoteName': {
       color: '#fff'
     },
+    '&:hover $timeCreation': {
+      color: '#fff'
+    },
     '&:hover $noteBtnsIncons': {
       color: '#fff'
     }
@@ -36,6 +39,10 @@ const useStyles = makeStyles(theme => ({
   unclickableNoteListItem: {
     opacity: '0.6',
     pointerEvents: 'none'
+  },
+  wrNoteName: {
+    display: 'flex',
+    flexDirection: 'column'
   },
   inactiveNoteName: {
     display: 'flex',
@@ -67,6 +74,13 @@ const useStyles = makeStyles(theme => ({
     pointerEvents: 'auto'
   },
   activeNoteNameText: {
+    color: '#fff'
+  },
+  timeCreation: {
+    padding: '5px 5px 0 5px',
+    fontSize: '10px'
+  },
+  inactiveTimeCreation: {
     color: '#fff'
   },
   wrNoteControlBtns: {

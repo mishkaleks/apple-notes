@@ -47,11 +47,14 @@ const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFo
   const handleOnCreateNewNote = () => {
     const idFolder = folders.findIndex((item) => item.id === activeFolderId);
     const idNote = `${activeFolderId}_${folders[idFolder].countNotes}`;
+    const startTime = new Date().toLocaleString();
+
     const newNote = {
       id: idNote,
       title: `New Note`,
       content: 'Add description to note',
-      edited: false
+      edited: false,
+      startTime: startTime
     };
     
     onCreateNewNote(newNote);

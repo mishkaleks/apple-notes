@@ -39,6 +39,7 @@ const ListNotes = ({ folders, activeFolderId }) => {
                       classes={classes}
                       id={item.id}
                       title={item.title}
+                      startTime={item.startTime}
                       index={index}
                     />
                   );
