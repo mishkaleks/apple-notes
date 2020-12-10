@@ -29,9 +29,9 @@ const ListNotes = ({ folders, activeFolderId }) => {
         >
           <Box className={classes.listNotes}>
             {
-              activeFolderId === null
+              !activeFolderId
                 ? 'List of the notes' 
-                : folders[folders.findIndex((item) => item.id === activeFolderId)].notes.map((item, index) => {
+                : folders.find((item) => item.id === activeFolderId).notes.map((item, index) => {
 
                   return (
                     <ListNotesItem 
@@ -62,7 +62,7 @@ const mapStateToProps = ({ folders, activeFolderId }) => {
 
 ListNotes.propTypes = {
   folders: PropTypes.array,
-  activeFolderId: PropTypes.number
+  activeFolderId: PropTypes.string
 };
 
 export default connect(mapStateToProps, null)(ListNotes);

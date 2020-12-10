@@ -38,16 +38,17 @@ function PersistentDrawerLeft(props) {
     return result;
   };
 
+  // Sorting notes after dragging to another folder
   const moveAndReorder = (listF, listN, startIndex, endIndex, activeFolderId) => {
     const result = Array.from(listF);
     const workListNActiveF = Array.from(listN);
     const [removedN] = workListNActiveF.splice(startIndex, 1);
 
-    const workListNInactiveF = Array.from(listF[listF.findIndex((item) => item.id === Number(endIndex))].notes);
+    const workListNInactiveF = Array.from(listF.find((item) => item.id === endIndex).notes);
     workListNInactiveF.push(removedN);
-    Array.prototype.splice.apply(result[result.findIndex((item) => item.id === Number(endIndex))].notes, [0, workListNInactiveF.length].concat(workListNInactiveF));
-    result[result.findIndex((item) => item.id === activeFolderId)].notes.splice(startIndex, 1);
-    result[result.findIndex((item) => item.id === activeFolderId)].notes.splice(Number(endIndex), 0);
+    Array.prototype.splice.apply(result.find((item) => item.id === endIndex).notes, [0, workListNInactiveF.length].concat(workListNInactiveF));
+    result.find((item) => item.id === activeFolderId).notes.splice(startIndex, 1);
+    result.find((item) => item.id === activeFolderId).notes.splice(endIndex, 0);
 
     return result;
   };
@@ -61,7 +62,7 @@ function PersistentDrawerLeft(props) {
     if (combine !== null && combine.droppableId === 'droppableFolder' && combine.draggableId && source.droppableId === 'droppableNote') {
       reorderList = moveAndReorder(
         folders,
-        folders[folders.findIndex((item) => item.id === activeFolderId)].notes,
+        folders.find((item) => item.id === activeFolderId).notes,
         source.index,
         combine.draggableId,
         activeFolderId
@@ -80,7 +81,7 @@ function PersistentDrawerLeft(props) {
     
     // Sorting notes
     if (source.droppableId === 'droppableNote' && destination.droppableId === 'droppableNote') {
-      reorderList = reorder(folders[folders.findIndex((item) => item.id === activeFolderId)].notes, source.index, destination.index);
+      reorderList = reorder(folders.find((item) => item.id === activeFolderId).notes, source.index, destination.index);
       onReorderNotes(reorderList);
     }
   };
@@ -122,7 +123,7 @@ const mapDispatchToProps = {
 
 PersistentDrawerLeft.propTypes = {
   folders: PropTypes.array,
-  activeFolderId: PropTypes.number,
+  activeFolderId: PropTypes.string,
   onReorderFolders: PropTypes.func,
   onReorderNotes: PropTypes.func,
   onMoveAndReorder: PropTypes.func

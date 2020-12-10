@@ -28,16 +28,19 @@ const useStyles = makeStyles(theme => ({
     color: '#fff'
   },
   inactiveCreateNewNoteBtn: {
-    pointerEvents: 'none'
+    pointerEvents: 'none',
+    '& svg': {
+      opacity: '0.3'
+    }
   },
   activeCreateNewNoteBtn: {
     pointerEvents: 'auto',
+    '& svg': {
+      color: '#fff'
+    }
   },
   inactiveNoteAddIcon: {
     opacity: '0.9'  
-  },
-  activeNoteAddIcon: {
-    color: '#fff'
   }
 }));
 

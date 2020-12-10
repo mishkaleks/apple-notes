@@ -20,8 +20,8 @@ class FolderListItem extends Component {
 
   static propTypes = {
     folders: PropTypes.array,
-    activeFolderId: PropTypes.number,
-    id: PropTypes.number,
+    activeFolderId: PropTypes.string,
+    id: PropTypes.string,
     title: PropTypes.string,
     index: PropTypes.number,
     onEditFolderName: PropTypes.func,
@@ -88,7 +88,7 @@ class FolderListItem extends Component {
   render() {
     const { classes, folders, activeFolderId, id, title, index } = this.props;
     const activeFolder = folders.find((item) => item.edited === true);
-    const isActiveFolder = activeFolderId === null ? false : folders[folders.findIndex((item) => item.id === activeFolderId)].edited;
+    const isActiveFolder = !activeFolderId ? false : folders.find((item) => item.id === activeFolderId).edited;
 
     return (
       <>
@@ -98,7 +98,7 @@ class FolderListItem extends Component {
               onClick={this.handleOnActiveFolder}
               className={clsx(classes.inactiveFolderListItem, {
                   [classes.activeFolderListItem]: activeFolderId === id,
-                  [classes.unclickableFolderListItem]: activeFolder ? activeFolder.id !== id : false
+                  [classes.unclickableFolderListItem]: activeFolder && activeFolder.id !== id
               })}
               ref={provided.innerRef}
               {...provided.draggableProps}
@@ -131,9 +131,9 @@ class FolderListItem extends Component {
                 <IconButton 
                   onClick={this.handleOnEditFolderName} 
                   aria-label="edit" 
-                  className={clsx(classes.folderControlBtns, 
-                    isActiveFolder && activeFolderId === id ? classes.inactiveFolderControlBtns : ''
-                  )}
+                  className={clsx(classes.folderControlBtns, {
+                    [classes.inactiveFolderControlBtns]: isActiveFolder && activeFolderId === id
+                  })}
                 >
                   <EditIcon className={classes.folderBtnsIncons} />
                 </IconButton>
@@ -141,9 +141,9 @@ class FolderListItem extends Component {
                 <IconButton 
                   onClick={(e) => this.handleOnDeleteFolder(e)} 
                   aria-label="delete" 
-                  className={clsx(classes.folderControlBtns, 
-                    isActiveFolder && activeFolderId === id ? classes.inactiveFolderControlBtns : ''
-                  )}
+                  className={clsx(classes.folderControlBtns, {
+                    [classes.inactiveFolderControlBtns]: isActiveFolder && activeFolderId === id
+                  })}
                 >
                   <DeleteIcon className={classes.folderBtnsIncons} />
                 </IconButton>

@@ -21,7 +21,7 @@ class ListNotesItem extends Component {
 
   static propTypes = {
     folders: PropTypes.array,
-    activeFolderId: PropTypes.number,
+    activeFolderId: PropTypes.string,
     activeNoteId: PropTypes.string,
     id: PropTypes.string,
     title: PropTypes.string,
@@ -38,8 +38,7 @@ class ListNotesItem extends Component {
 
   handleOnDeleteNote = (e) => {
     const { folders, activeFolderId, id, onOpenModal } = this.props;
-    const actFolderId = folders.findIndex((item) => item.id === activeFolderId);
-    const deleteNoteId = folders[actFolderId].notes.findIndex((item) => item.id === id);
+    const deleteNoteId = folders.find((item) => item.id === activeFolderId).notes.findIndex((item) => item.id === id);
 
     e.stopPropagation();
     onOpenModal(deleteNoteId, 'note');
@@ -47,9 +46,8 @@ class ListNotesItem extends Component {
   
   handleOnEditNoteName = () => {
     const { folders, activeFolderId, onEditNoteName, id } = this.props;
-    const idEditedFolder = folders.findIndex((item) => item.id === activeFolderId);
-    const idEditedNote = folders[idEditedFolder].notes.findIndex((item) => item.id === id);
-    const editedNote = folders[idEditedFolder].notes[idEditedNote];
+    const idEditedNote = folders.find((item) => item.id === activeFolderId).notes.findIndex((item) => item.id === id);
+    const editedNote = folders.find((item) => item.id === activeFolderId).notes[idEditedNote];
     const updateEditedNote = {
       ...editedNote,
       edited: true
@@ -64,9 +62,8 @@ class ListNotesItem extends Component {
 
   handleOnAcceptNoteName = () => {
     const { folders, activeFolderId, newNoteName, onAcceptNoteName, id } = this.props;
-    const folderId = folders.findIndex((item) => item.id === activeFolderId);
-    const oldNoteId = folders[folderId].notes.findIndex((item) => item.id === id);
-    const oldNote = folders[folderId].notes[oldNoteId];
+    const oldNoteId = folders.find((item) => item.id === activeFolderId).notes.findIndex((item) => item.id === id);
+    const oldNote = folders.find((item) => item.id === activeFolderId).notes[oldNoteId];
     const newNoteTitle = newNoteName ? newNoteName : oldNote.title;
     const updateNote = {
       ...oldNote,
@@ -96,11 +93,11 @@ class ListNotesItem extends Component {
 
   render() {
     const { classes, folders, activeFolderId, activeNoteId, id, title, startTime, index } = this.props;
-    const activeNote = activeNoteId === null ? false : folders[folders.findIndex((item) => item.id === activeFolderId)].notes.find((item) => item.edited === true);
-    const isActiveNote = activeNoteId === null
+    const activeNote = !activeNoteId ? false : folders.find(item => item.id === activeFolderId).notes.find((item) => item.edited === true);
+    const isActiveNote = !activeNoteId
       ? false 
-      : folders[folders.findIndex((item) => item.id === activeFolderId)]
-        .notes[folders[folders.findIndex((item) => item.id === activeFolderId)].notes.findIndex((item) => item.id === activeNoteId)].edited;
+      : folders.find((item) => item.id === activeFolderId)
+        .notes[folders.find((item) => item.id === activeFolderId).notes.findIndex((item) => item.id === activeNoteId)].edited;
 
     return (
       <Draggable draggableId={`${id}`} index={index}>
@@ -109,7 +106,7 @@ class ListNotesItem extends Component {
             onClick={this.handleOnActiveNote}
             className={clsx(classes.inactiveNoteListItem, {
               [classes.activeNoteListItem]: activeNoteId === id,
-              [classes.unclickableNoteListItem]: activeNote ? activeNote.id !== id : false
+              [classes.unclickableNoteListItem]: activeNote && activeNote.id !== id
             })}
             ref={provided.innerRef}
             {...provided.draggableProps}
@@ -123,16 +120,17 @@ class ListNotesItem extends Component {
               <input
                 onChange={this.handleGetNoteName}
                 type="text"
-                className={clsx(
-                  isActiveNote && activeNoteId === id ? classes.activeNoteName : classes.inactiveNoteName,
-                  activeNoteId === id ? classes.activeNoteNameText : ''
-                )}
+                className={clsx(classes.inactiveNoteName, {
+                  [classes.activeNoteName]: isActiveNote && activeNoteId === id,
+                  [classes.activeNoteNameText]: activeNoteId === id
+                })}
                 defaultValue={title}
               />
               <Box
                 component="span"
-                className={clsx(classes.timeCreation,
-                  activeNoteId === id ? classes.inactiveTimeCreation : '')}
+                className={clsx(classes.timeCreation, {
+                  [classes.inactiveTimeCreation]: activeNoteId === id
+                })}
               >
                 { startTime }
               </Box>
@@ -148,33 +146,37 @@ class ListNotesItem extends Component {
                     : classes.inactiveAcceptNoteNameBtn
                 )}
               >
-              <CheckIcon className={clsx(classes.noteBtnsIncons,
-                activeNoteId === id ? classes.inactiveNoteBtnsIncons : ''
-              )} />
+              <CheckIcon className={clsx(classes.noteBtnsIncons, {
+                [classes.inactiveNoteBtnsIncons]: activeNoteId === id
+              })} />
               </IconButton>
 
               <IconButton
                 onClick={this.handleOnEditNoteName}
                 aria-label="edit"
-                className={clsx(classes.noteControlBtns,
-                  isActiveNote && activeNoteId === id ? classes.inactiveNoteControlBtns : ''  
-                )}  
+                disabled={isActiveNote && activeNoteId === id}
+                classes={{
+                  root: classes.noteControlBtns,
+                  disabled: classes.inactiveNoteControlBtns
+                }} 
               >
-              <EditIcon className={clsx(classes.noteBtnsIncons,
-                activeNoteId === id ? classes.inactiveNoteBtnsIncons : ''
-              )} />
+              <EditIcon className={clsx(classes.noteBtnsIncons, {
+                [classes.inactiveNoteBtnsIncons]: activeNoteId === id
+              })} />
               </IconButton>
 
               <IconButton
                 onClick={(e) => this.handleOnDeleteNote(e)}
                 aria-label="delete"
-                className={clsx(classes.noteControlBtns,
-                  isActiveNote && activeNoteId === id ? classes.inactiveNoteControlBtns : ''  
-                )}
+                disabled={isActiveNote && activeNoteId === id}
+                classes={{
+                  root: classes.noteControlBtns,
+                  disabled: classes.inactiveNoteControlBtns
+                }}
               >
-              <DeleteIcon className={clsx(classes.noteBtnsIncons,
-                activeNoteId === id ? classes.inactiveNoteBtnsIncons : ''
-              )} />
+              <DeleteIcon className={clsx(classes.noteBtnsIncons, {
+                [classes.inactiveNoteBtnsIncons]: activeNoteId === id
+              })} />
               </IconButton>
             </div>
           </li>

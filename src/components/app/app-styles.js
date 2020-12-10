@@ -58,21 +58,6 @@ const useStyles = makeStyles(theme => ({
     '&:focus': {
       outline: 'none'
     }
-  },
-  activeStubContentNotes: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    flexGrow: 1,
-    width: '100%',
-    border: 'none',
-    padding: '15px',
-    resize: 'none'
-  },
-  inactiveStubContentNotes: {
-    display: 'none'
   }
 }));
 

@@ -4,64 +4,43 @@ import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
-import { getNoteContent } from '../../reducers/index';
 
 // Material-UI
 import { Box } from '@material-ui/core';
 
+// Components
+import NoteText from '../helpers/note-text';
+import StubNoteText from '../helpers/stub-note-text';
+
 class NoteContent extends Component {
 
   static propTypes = {
-    folders: PropTypes.array,
-    activeFolderId: PropTypes.number,
     activeNoteId: PropTypes.string,
-    getNoteContent: PropTypes.func
-  };
-
-  handleGetNoteContent = (e) => {
-    const { folders, activeFolderId, activeNoteId, getNoteContent } = this.props;
-    const idNote = folders[folders.findIndex((item) => item.id === activeFolderId)].notes.findIndex((item) => item.id === activeNoteId);
-    const oldNote = folders[folders.findIndex((item) => item.id === activeFolderId)].notes.find((item) => item.id === activeNoteId);
-    const textNote = e.target.value === '' ? 'Add description to note' : e.target.value;
-    const newNote = {
-      ...oldNote,
-      content: textNote
-    };
-
-    getNoteContent(idNote, newNote);
   };
 
   render() {
-    const { classes, folders, activeFolderId, activeNoteId } = this.props;
-    const noteContent = activeFolderId !== null && activeNoteId !== null 
-      ? folders[folders.findIndex((item) => item.id === activeFolderId)].notes.find((item) => item.id === activeNoteId).content
-      : 'Please select a note...';
-      const idKey = `${activeFolderId}_${activeNoteId}`;
+    const { classes, activeNoteId } = this.props;
     
     return (
       <Box className={classes.wrNoteContent}>
-        <textarea
-          onChange={this.handleGetNoteContent}
-          key={idKey} 
-          className={classes.noteContent}
-          defaultValue={noteContent}
-        ></textarea>
-        <textarea className={activeNoteId === null ? classes.activeStubContentNotes : classes.inactiveStubContentNotes} disabled ></textarea>
+        {
+          !activeNoteId 
+            ? (
+              <StubNoteText />
+            )
+            : (
+              <NoteText classes={classes} />
+            )
+        }
       </Box>
     );
   };
 };
 
-const mapStateToProps = ({ folders, activeFolderId, activeNoteId }) => {
+const mapStateToProps = ({ activeNoteId }) => {
   return {
-    folders,
-    activeFolderId,
     activeNoteId
   };
 };
 
-const mapDispatchToProps = {
-  getNoteContent
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(NoteContent);
+export default connect(mapStateToProps, null)(NoteContent);

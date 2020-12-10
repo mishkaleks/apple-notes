@@ -24,33 +24,20 @@ const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFo
   };
 
   const handleOnAddFolder = () => {
-    let maxIdFolders = 0;
-
-    for(let i=0; i<folders.length; i++) {
-      if(folders[i].id > maxIdFolders) {
-        maxIdFolders = folders[i].id;
-      }
-    }
-
-    const id = folders.length === 0 ? 0 : maxIdFolders + 1;
     const newFolder = {
-      id,
-      title: `New Foolder ${id + 1}`,
+      id: `id${(+new Date()).toString(16)}`,
+      title: `New Foolder`,
       notes: [],
-      edited: false,
-      countNotes: 0
+      edited: false
     };
 
     onAddFolder(newFolder);
   };
 
   const handleOnCreateNewNote = () => {
-    const idFolder = folders.findIndex((item) => item.id === activeFolderId);
-    const idNote = `${activeFolderId}_${folders[idFolder].countNotes}`;
     const startTime = new Date().toLocaleString();
-
     const newNote = {
-      id: idNote,
+      id: `id${activeFolderId}_${(+new Date()).toString(16)}`,
       title: `New Note`,
       content: 'Add description to note',
       edited: false,
@@ -59,7 +46,7 @@ const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFo
     
     onCreateNewNote(newNote);
   };
-  
+
   return (
     <AppBar
       position="fixed"
@@ -85,10 +72,14 @@ const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFo
 
           <IconButton 
             onClick={handleOnCreateNewNote} 
-            aria-label="note add" 
-            className={activeFolderId === null ? classes.inactiveCreateNewNoteBtn : classes.activeCreateNewNoteBtn}
+            aria-label="note add"
+            disabled={!activeFolderId}
+            classes={{
+              root: classes.activeCreateNewNoteBtn,
+              disabled: classes.inactiveCreateNewNoteBtn
+            }} 
           >
-            <NoteAddIcon className={activeFolderId === null ? classes.inactiveNoteAddIcon : classes.activeNoteAddIcon} />
+            <NoteAddIcon /> 
           </IconButton>
         </Typography>
       </Toolbar>
@@ -114,7 +105,7 @@ TopBar.propTypes = {
   folders: PropTypes.array,
   onAddFolder: PropTypes.func,
   onCreateNewNote: PropTypes.func,
-  activeFolderId: PropTypes.number
+  activeFolderId: PropTypes.string
 };
 
 export default connect (mapStateToProps, mapDispatchToProps)(TopBar); 

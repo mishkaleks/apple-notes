@@ -94,7 +94,10 @@ const useStyles = makeStyles(theme => ({
   },
   inactiveNoteControlBtns: {
     pointerEvents: 'none',
-    opacity: '0.3'
+    opacity: '0.3',
+    '& svg': {
+      color: '#fff'
+    }
   },
   activeAcceptNoteNameBtn: {
     display: 'block'
