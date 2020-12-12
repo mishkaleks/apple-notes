@@ -2,11 +2,20 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
+  // FolderList styles
+  wrFolderList: {
+    minHeight: 'calc(100vh - 124px)',
+    '@media screen and (max-width: 599px)': {
+      minHeight: 'calc(100vh - 116px)',
+    }
+  },
   folderList: {
+    width: '100%',
     margin: 0,
     padding: 0,
     listStyleType: 'none'
   },
+  // FolderListItem styles
   inactiveFolderListItem: {
     display: 'flex',
     justifyContent: 'space-between',

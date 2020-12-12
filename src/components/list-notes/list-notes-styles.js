@@ -7,7 +7,11 @@ const useStyles = makeStyles(theme => ({
     height: 'calc(100vh - 64px)',
     padding: '15px',
     overflow: 'scroll',
-    backgroundColor: '#cfe8fc'
+    backgroundColor: '#cfe8fc',
+    '@media screen and (max-width: 991px)': {
+      width: '100%',
+      height: 'calc(50vh)'
+    }
   },
   inactiveNoteListItem: {
     display: 'flex',

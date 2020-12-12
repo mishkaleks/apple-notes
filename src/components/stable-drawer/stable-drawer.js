@@ -1,22 +1,27 @@
 // Base
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Material-UI
 import { Drawer, Box, IconButton } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
 
 // Components
-import FolderList from '../folder-list/folder-list';
+import FolderContent from '../folder-content/folder-content';
 
 // Styles
 import useStyles from './stable-drawer-styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-const StableDrawer = ({ open, setOpen }) => {
+const StableDrawer = ({ open, setOpen, folders, handleOnAddFolder }) => {
   const classes = useStyles();
   const theme = useTheme();
+  const isMobile = useMediaQuery('(max-width:667px)');
 
+  // Close the drawer
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -36,17 +41,28 @@ const StableDrawer = ({ open, setOpen }) => {
           <span>Apple Notes</span>
         </Box>
 
+        {isMobile && (
+          <IconButton onClick={handleOnAddFolder} aria-label="create new folder">
+            <CreateNewFolderIcon className={classes.сreateNewFolderIcon} />
+          </IconButton>
+        ) }
+
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === "ltr" ? (
-            <ChevronLeftIcon />
+            <ChevronLeftIcon className={classes.drawerCloseBtn} />
           ) : (
-            <ChevronRightIcon />
+            <ChevronRightIcon className={classes.drawerCloseBtn} />
           )}
         </IconButton>  
       </div>
-      <FolderList classes={classes} />
+      <FolderContent setOpen={setOpen} folders={folders} />
     </Drawer>
   );
+};
+
+StableDrawer.propTypes = {
+  folders: PropTypes.array,
+  handleOnAddFolder: PropTypes.func
 };
 
 export default StableDrawer;

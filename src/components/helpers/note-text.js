@@ -15,6 +15,7 @@ class NoteText extends Component {
     getNoteContent: PropTypes.func
   };
 
+  // Get note content
   handleGetNoteContent = (e) => {
     const { folders, activeFolderId, activeNoteId, getNoteContent } = this.props;
     const idNote = folders.find((item) => item.id === activeFolderId).notes.findIndex((item) => item.id === activeNoteId);

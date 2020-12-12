@@ -25,12 +25,8 @@ class NoteContent extends Component {
       <Box className={classes.wrNoteContent}>
         {
           !activeNoteId 
-            ? (
-              <StubNoteText />
-            )
-            : (
-              <NoteText classes={classes} />
-            )
+            ? ( <StubNoteText /> )
+            : ( <NoteText classes={classes} /> )
         }
       </Box>
     );

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
-import { onReorderFolders, onReorderNotes, onMoveAndReorder } from '../../reducers/index';
+import { onReorderFolders, onReorderNotes, onMoveAndReorder, onAddFolder } from '../../reducers/index';
 
 // Material-UI
 import { CssBaseline, Box } from '@material-ui/core';
@@ -26,10 +26,12 @@ import useStyles from './app-styles';
 function PersistentDrawerLeft(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  const { isOpen } = props;
+  const { isOpen, folders, onAddFolder } = props;
 
-  const reorder = (list, startIndex, endIndex) => {   
-    const result = Array.from(list);
+  // Reorder items
+  const reorder = (list, startIndex, endIndex) => { 
+    // A new Array instance  
+    const result = [...list];
     // Remove one element this startIndex
     const [removed] = result.splice(startIndex, 1);
     // Inserts the deleted element after endIndex
@@ -40,12 +42,15 @@ function PersistentDrawerLeft(props) {
 
   // Sorting notes after dragging to another folder
   const moveAndReorder = (listF, listN, startIndex, endIndex, activeFolderId) => {
-    const result = Array.from(listF);
-    const workListNActiveF = Array.from(listN);
+    // A new Array instance
+    const result = [...listF];
+    // A new Array instance
+    const workListNActiveF = [...listN];
     const [removedN] = workListNActiveF.splice(startIndex, 1);
-
-    const workListNInactiveF = Array.from(listF.find((item) => item.id === endIndex).notes);
+    // A new Array instance
+    const workListNInactiveF = [...listF.find((item) => item.id === endIndex).notes];
     workListNInactiveF.push(removedN);
+    // Change the contents of an array
     Array.prototype.splice.apply(result.find((item) => item.id === endIndex).notes, [0, workListNInactiveF.length].concat(workListNInactiveF));
     result.find((item) => item.id === activeFolderId).notes.splice(startIndex, 1);
     result.find((item) => item.id === activeFolderId).notes.splice(endIndex, 0);
@@ -53,6 +58,7 @@ function PersistentDrawerLeft(props) {
     return result;
   };
 
+  // A function leading to synchronous reordering of the list of dragged objects
   const onDragEnd = (result) => {
     const { folders, activeFolderId, onReorderFolders, onReorderNotes, onMoveAndReorder } = props;
     const { combine, source, destination } = result;
@@ -86,12 +92,24 @@ function PersistentDrawerLeft(props) {
     }
   };
 
+  // Create a new folder
+  const handleOnAddFolder = () => {
+    const newFolder = {
+      id: `id${(+new Date()).toString(16)}`,
+      title: `New Foolder`,
+      notes: [],
+      edited: false
+    };
+
+    onAddFolder(newFolder);
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className={classes.root}>
         <CssBaseline />
         <TopBar open={open} setOpen={setOpen} />
-        <StableDrawer open={open} setOpen={setOpen} />
+        <StableDrawer open={open} setOpen={setOpen} folders={folders} handleOnAddFolder={handleOnAddFolder} />
         <main className={clsx(classes.content, {
           [classes.contentShift]: open
         })}>
@@ -107,18 +125,19 @@ function PersistentDrawerLeft(props) {
   );
 };
 
-const mapStateToProps = ({ folders, activeFolderId, isOpen }) => {
+const mapStateToProps = ({ isOpen, folders, activeFolderId }) => {
   return {
+    isOpen,
     folders,
-    activeFolderId,
-    isOpen
+    activeFolderId
   };
 };
 
 const mapDispatchToProps = {
   onReorderFolders,
   onReorderNotes,
-  onMoveAndReorder
+  onMoveAndReorder,
+  onAddFolder,
 };
 
 PersistentDrawerLeft.propTypes = {
@@ -126,7 +145,8 @@ PersistentDrawerLeft.propTypes = {
   activeFolderId: PropTypes.string,
   onReorderFolders: PropTypes.func,
   onReorderNotes: PropTypes.func,
-  onMoveAndReorder: PropTypes.func
+  onMoveAndReorder: PropTypes.func,
+  onAddFolder: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersistentDrawerLeft);

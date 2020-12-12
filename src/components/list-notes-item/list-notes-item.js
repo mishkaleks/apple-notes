@@ -9,10 +9,10 @@ import { onEditNoteName, getNoteName, onAcceptNoteName, onActiveNote, onOpenModa
 
 // Material-UI
 import { IconButton } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
 import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Box from '@material-ui/core/Box';
 
 // Beautiful DND
 import { Draggable } from "react-beautiful-dnd";
@@ -36,6 +36,7 @@ class ListNotesItem extends Component {
     onActiveNote: PropTypes.func
   };
 
+  // Delete note
   handleOnDeleteNote = (e) => {
     const { folders, activeFolderId, id, onOpenModal } = this.props;
     const deleteNoteId = folders.find((item) => item.id === activeFolderId).notes.findIndex((item) => item.id === id);
@@ -44,6 +45,7 @@ class ListNotesItem extends Component {
     onOpenModal(deleteNoteId, 'note');
   };
   
+  // Edit note name
   handleOnEditNoteName = () => {
     const { folders, activeFolderId, onEditNoteName, id } = this.props;
     const idEditedNote = folders.find((item) => item.id === activeFolderId).notes.findIndex((item) => item.id === id);
@@ -56,10 +58,12 @@ class ListNotesItem extends Component {
     onEditNoteName(id, idEditedNote, updateEditedNote);
   };
 
+  // Get note name
   handleGetNoteName = (e) => {
     this.props.getNoteName(e);
   };
 
+  // Accept note name
   handleOnAcceptNoteName = () => {
     const { folders, activeFolderId, newNoteName, onAcceptNoteName, id } = this.props;
     const oldNoteId = folders.find((item) => item.id === activeFolderId).notes.findIndex((item) => item.id === id);
@@ -74,6 +78,7 @@ class ListNotesItem extends Component {
     onAcceptNoteName(oldNoteId, updateNote);
   };
 
+  // Active note
   handleOnActiveNote = () => {
     const { onActiveNote, id } = this.props;
     
@@ -92,7 +97,7 @@ class ListNotesItem extends Component {
   });
 
   render() {
-    const { classes, folders, activeFolderId, activeNoteId, id, title, startTime, index } = this.props;
+    const { classes, folders, activeFolderId, activeNoteId, id, title, startTime, index, isDrag  } = this.props;
     const activeNote = !activeNoteId ? false : folders.find(item => item.id === activeFolderId).notes.find((item) => item.edited === true);
     const isActiveNote = !activeNoteId
       ? false 
@@ -100,7 +105,7 @@ class ListNotesItem extends Component {
         .notes[folders.find((item) => item.id === activeFolderId).notes.findIndex((item) => item.id === activeNoteId)].edited;
 
     return (
-      <Draggable draggableId={`${id}`} index={index}>
+      <Draggable draggableId={`${id}`} index={index} isDragDisabled={isDrag}>
         {(provided, snapshot) => (
           <li 
             onClick={this.handleOnActiveNote}

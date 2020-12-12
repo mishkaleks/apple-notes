@@ -32,6 +32,9 @@ const useStyles = makeStyles(theme => ({
   wrColumn: {
     display: 'flex',
     flexGrow: 1,
+    '@media screen and (max-width: 991px)': {
+      flexDirection: 'column'
+    }
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -40,10 +43,16 @@ const useStyles = makeStyles(theme => ({
     }),
     marginLeft: 0
   },
+  // NoteContent styles
   wrNoteContent: {
     position: 'relative',
-    width: 'calc(100% - 325px)'
+    width: 'calc(100% - 325px)',
+    '@media screen and (max-width: 991px)': {
+      width: '100%',
+      height: '100%'
+    }
   },
+  // NoteText styles
   noteContent: {
     position: 'absolute',
     top: 0,

@@ -23,7 +23,10 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     maxWidth: '350px',
     padding: '30px',
-    background: '#fff'
+    background: '#fff',
+    webkitBoxShadow: '0px 0px 15px -10px #000000',
+    mozBoxShadow: '0px 0px 15px -10px #000000',
+    boxShadow: '0px 0px 15px -10px #000000'
   },
   modalHeader: {
     display: 'flex',

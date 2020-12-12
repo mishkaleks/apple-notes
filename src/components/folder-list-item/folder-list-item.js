@@ -30,6 +30,7 @@ class FolderListItem extends Component {
     onActiveFolder: PropTypes.func
   };
 
+  // Delete folder
   handleOnDeleteFolder = (e) => {
     const { folders, id, onOpenModal } = this.props;
     const deleteId = folders.findIndex((item) => item.id === id);
@@ -38,8 +39,9 @@ class FolderListItem extends Component {
     onOpenModal(deleteId, 'folder');
   };
 
-  handleOnEditFolderName = () => {
-    const { folders, onEditFolderName, id } = this.props;
+  // Edit folder name
+  handleOnEditFolderName = (e) => {
+    const { folders, onActiveFolder, onEditFolderName, id } = this.props;
     const idEditedFolder = folders.findIndex((item) => item.id === id);
     const editedFolder = folders[idEditedFolder];
     const updateEditedFolder = {
@@ -47,14 +49,23 @@ class FolderListItem extends Component {
       edited: true
     };
 
+    e.stopPropagation();
+    onActiveFolder(id);
     onEditFolderName(idEditedFolder, updateEditedFolder);
   };
 
+  // Stop event propagation for clicking on folder name
+  handleClickFolderName = (e) => {
+    e.stopPropagation();
+  };
+
+  // Get folder name
   handleGetFolderName = (e) => {
     this.props.getFolderName(e);
   };
 
-  handleOnAcceptFolderName = () => {
+  // Accept folder name
+  handleOnAcceptFolderName = (e) => {
     const { folders, newFolderName, onAcceptFolderName, id } = this.props;
     const oldFolderId = folders.findIndex((item) => item.id === id);
     const oldFolder = folders[oldFolderId];
@@ -65,12 +76,15 @@ class FolderListItem extends Component {
       edited: !oldFolder.edited
     };
 
+    e.stopPropagation();
     onAcceptFolderName(oldFolderId, updateFolder);
   };
 
+  // Active folder name
   handleOnActiveFolder = () => {
-    const { onActiveFolder, id } = this.props;
+    const { setOpen, onActiveFolder, id, isMobile } = this.props;
     
+    isMobile && setOpen(false);
     onActiveFolder(id);
   };
 
@@ -109,6 +123,7 @@ class FolderListItem extends Component {
               )}
             >
               <input
+                onClick={(e) => this.handleClickFolderName(e)}
                 onChange={this.handleGetFolderName}
                 type="text"
                 className={isActiveFolder && activeFolderId === id ? classes.activeFolderName : classes.inactiveFolderName}
@@ -117,7 +132,7 @@ class FolderListItem extends Component {
 
               <div className={classes.wrFolderControlBtns}>
                 <IconButton 
-                  onClick={this.handleOnAcceptFolderName}  
+                  onClick={(e) => this.handleOnAcceptFolderName(e)}  
                   aria-label="check" 
                   className={clsx(classes.folderControlBtns, 
                     isActiveFolder && activeFolderId === id 
@@ -129,7 +144,7 @@ class FolderListItem extends Component {
                 </IconButton>
 
                 <IconButton 
-                  onClick={this.handleOnEditFolderName} 
+                  onClick={(e) => this.handleOnEditFolderName(e)} 
                   aria-label="edit" 
                   className={clsx(classes.folderControlBtns, {
                     [classes.inactiveFolderControlBtns]: isActiveFolder && activeFolderId === id

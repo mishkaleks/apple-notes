@@ -19,7 +19,10 @@ const useStyles = makeStyles(theme => ({
     })
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
+    '@media screen and (max-width: 667px)': {
+      marginRight: '0'
+    }
   },
   hide: {
     display: 'none'

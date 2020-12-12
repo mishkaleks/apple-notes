@@ -18,7 +18,7 @@ class FolderList extends Component {
   };
 
   render() {
-    const { classes, folders } = this.props;
+    const { setOpen, isMobile, classes, folders } = this.props;
 
     return (
       <Droppable droppableId="droppableFolder" isCombineEnabled >
@@ -32,6 +32,8 @@ class FolderList extends Component {
                 {folders.map((item, index) => {
                   return (
                     <FolderListItem
+                      setOpen={setOpen}
+                      isMobile={isMobile}
                       key={item.id} 
                       classes={classes} 
                       id={item.id} 

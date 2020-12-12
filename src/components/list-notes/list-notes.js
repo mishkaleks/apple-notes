@@ -28,24 +28,21 @@ const ListNotes = ({ folders, activeFolderId }) => {
           {...provided.droppableProps}
         >
           <Box className={classes.listNotes}>
-            {
-              !activeFolderId
-                ? 'List of the notes' 
-                : folders.find((item) => item.id === activeFolderId).notes.map((item, index) => {
-
-                  return (
-                    <ListNotesItem 
-                      key={item.id}
-                      classes={classes}
-                      id={item.id}
-                      title={item.title}
-                      startTime={item.startTime}
-                      index={index}
-                    />
-                  );
-                })
-            }
-          </Box>
+            {!activeFolderId
+              ? 'List of the notes' 
+              : folders.find((item) => item.id === activeFolderId).notes.map((item, index) => {
+                return (
+                  <ListNotesItem 
+                    key={item.id}
+                    classes={classes}
+                    id={item.id}
+                    title={item.title}
+                    startTime={item.startTime}
+                    index={index}
+                  />
+                );
+              })}
+            </Box>
           {provided.placeholder}
         </div>
       )}

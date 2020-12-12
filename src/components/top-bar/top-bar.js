@@ -15,14 +15,18 @@ import NoteAddIcon from '@material-ui/icons/NoteAdd';
 
 // Styles
 import useStyles from './top-bar-styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 
-const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFolderId }) => {
+const TopBar = ({ open, setOpen, onAddFolder, onCreateNewNote, activeFolderId }) => {
   const classes = useStyles();
+  const isMobile = useMediaQuery('(max-width:667px)');
   
+  // Open the drawer
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
+  // Create new folder
   const handleOnAddFolder = () => {
     const newFolder = {
       id: `id${(+new Date()).toString(16)}`,
@@ -34,6 +38,7 @@ const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFo
     onAddFolder(newFolder);
   };
 
+  // Create new note
   const handleOnCreateNewNote = () => {
     const startTime = new Date().toLocaleString();
     const newNote = {
@@ -66,9 +71,11 @@ const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFo
         </IconButton>
                      
         <Typography variant="h6" noWrap>
-          <IconButton onClick={handleOnAddFolder} aria-label="create new folder">
-            <CreateNewFolderIcon className={classes.сreateNewFolderIcon} />
-          </IconButton>
+          {!isMobile && (
+            <IconButton onClick={handleOnAddFolder} aria-label="create new folder">
+              <CreateNewFolderIcon className={classes.сreateNewFolderIcon} />
+            </IconButton>
+          )}
 
           <IconButton 
             onClick={handleOnCreateNewNote} 
@@ -87,22 +94,18 @@ const TopBar = ({ open, setOpen, folders, onAddFolder, onCreateNewNote, activeFo
   );
 };
 
-const mapStateToProps = ({ folders, activeFolderId }) => {
+const mapStateToProps = ({ activeFolderId }) => {
   return {
-    folders,
     activeFolderId
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onAddFolder: (item) => dispatch(onAddFolder(item)),
-    onCreateNewNote: (item) => dispatch(onCreateNewNote(item))
-  };
+const mapDispatchToProps =  {
+    onAddFolder,
+    onCreateNewNote
 };
 
 TopBar.propTypes = {
-  folders: PropTypes.array,
   onAddFolder: PropTypes.func,
   onCreateNewNote: PropTypes.func,
   activeFolderId: PropTypes.string

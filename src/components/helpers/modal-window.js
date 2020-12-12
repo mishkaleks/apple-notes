@@ -3,7 +3,7 @@ import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
-// React
+// Redux
 import { connect } from 'react-redux';
 import { onDeleteFolder, onDeleteNote, onCloseModal } from '../../reducers/index';
 
