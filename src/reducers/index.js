@@ -6,7 +6,8 @@ const initialState = {
   activeNoteId: null,
   isOpen: false,
   typeModal: '',
-  deleteIdForModal: null
+  deleteIdForModal: null,
+  isDisabledFolders: false
 };
 
 const ADD_FOLDER_TO_NOTES = 'ADD_FOLDER_TO_NOTES';
@@ -18,6 +19,7 @@ const GET_ACTIVE_FOLDER_TO_NOTES = 'GET_ACTIVE_FOLDER_TO_NOTES';
 const ADD_NOTE_TO_FOLDER = 'ADD_NOTE_TO_FOLDER';
 const DELETE_NOTE_TO_FOLDER = 'DELETE_NOTE_TO_FOLDER';
 const EDIT_NOTE_NAME_TO_FOLDER = 'EDIT_NOTE_NAME_TO_FOLDER';
+const DISABLED_FOLDER = 'DISABLED_FOLDER';
 const GET_NOTE_NAME_TO_FOLDER = 'GET_NOTE_NAME_TO_FOLDER';
 const ACCEPT_NOTE_NAME_TO_FOLDER = 'ACCEPT_NOTE_NAME_TO_FOLDER';
 const GET_ACTIVE_NOTE_TO_FOLDER = 'GET_ACTIVE_NOTE_TO_FOLDER';
@@ -97,6 +99,11 @@ const reducer = (state = initialState, action) => {
           )
         ],
         activeNoteId: action.id
+      };
+    case DISABLED_FOLDER:
+      return {
+        ...state,
+        isDisabledFolders: !state.isDisabledFolders
       };
     case GET_NOTE_NAME_TO_FOLDER:
       return {
@@ -235,6 +242,12 @@ const onEditNoteName = (id, idx, item) => {
   };
 };
 
+const onDisabledFolders = () => {
+  return {
+    type: 'DISABLED_FOLDER'
+  };
+};
+
 const getNoteName = (e) => {
   return {
     type: 'GET_NOTE_NAME_TO_FOLDER',
@@ -310,6 +323,7 @@ export {
   onCreateNewNote,
   onDeleteNote,
   onEditNoteName,
+  onDisabledFolders,
   getNoteName,
   onAcceptNoteName,
   onActiveNote,

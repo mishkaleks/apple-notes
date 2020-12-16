@@ -7,19 +7,35 @@ import StubFolderList from '../helpers/stub-folder-list';
 import FolderList from '../folder-list/folder-list';
 
 // Styles
-import useStyles from './folder-content-styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles } from '@material-ui/core/styles';
 
-const FolderContent = ({ setOpen, folders }) => {
+const useStyles = makeStyles(theme => ({
+  // FolderList styles
+  wrFolderList: {
+    minHeight: 'calc(100vh - 124px)',
+    '@media screen and (max-width: 599px)': {
+      minHeight: 'calc(100vh - 116px)',
+    }
+  },
+  folderList: {
+    width: '100%',
+    margin: 0,
+    padding: 0,
+    listStyleType: 'none'
+  }
+}));
+
+const FolderContent = ({ folders, setOpen }) => {
   const classes = useStyles();
   const isMobile = useMediaQuery('(max-width:667px)');
 
   return (
     <>
       {
-        folders.length === 0
+        !folders.length
           ? ( <StubFolderList /> )
-          : ( <FolderList setOpen={setOpen} classes={classes} isMobile={isMobile} /> )
+          : ( <FolderList classes={classes} folders={folders} isMobile={isMobile} setOpen={setOpen} /> )
       }
     </>
   );

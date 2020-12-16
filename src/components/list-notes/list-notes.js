@@ -5,9 +5,6 @@ import PropTypes from 'prop-types';
 // Redux
 import { connect } from 'react-redux';
 
-// Material-UI
-import { Box } from '@material-ui/core';
-
 // Beautiful DND
 import { Droppable } from "react-beautiful-dnd";
 
@@ -15,10 +12,26 @@ import { Droppable } from "react-beautiful-dnd";
 import ListNotesItem from '../list-notes-item/list-notes-item';
 
 // Styles
-import useStyles from './list-notes-styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  listNotes: {
+    width: '325px',
+    height: 'calc(100vh - 64px)',
+    padding: '15px',
+    overflow: 'scroll',
+    backgroundColor: '#cfe8fc',
+    '@media screen and (max-width: 991px)': {
+      width: '100%',
+      height: 'calc(50vh)'
+    }
+  }
+}));
 
 const ListNotes = ({ folders, activeFolderId }) => {
   const classes = useStyles();
+  const isDrag = useMediaQuery('(max-width:667px)');
 
   return (
     <Droppable droppableId="droppableNote">
@@ -27,23 +40,23 @@ const ListNotes = ({ folders, activeFolderId }) => {
           ref={provided.innerRef}
           {...provided.droppableProps}
         >
-          <Box className={classes.listNotes}>
+          <div className={classes.listNotes}>
             {!activeFolderId
               ? 'List of the notes' 
               : folders.find((item) => item.id === activeFolderId).notes.map((item, index) => {
                 return (
                   <ListNotesItem 
                     key={item.id}
-                    classes={classes}
                     id={item.id}
                     title={item.title}
+                    edited={item.edited}
                     startTime={item.startTime}
                     index={index}
+                    isDrag={isDrag}
                   />
                 );
               })}
-            </Box>
-          {provided.placeholder}
+            </div>
         </div>
       )}
     </Droppable>

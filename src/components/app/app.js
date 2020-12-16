@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { onReorderFolders, onReorderNotes, onMoveAndReorder, onAddFolder } from '../../reducers/index';
 
 // Material-UI
-import { CssBaseline, Box } from '@material-ui/core';
+import { CssBaseline } from '@material-ui/core';
 
 // Beautiful DND
 import { DragDropContext } from "react-beautiful-dnd";
@@ -26,7 +26,7 @@ import useStyles from './app-styles';
 function PersistentDrawerLeft(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  const { isOpen, folders, onAddFolder } = props;
+  const { folders, isOpen, onAddFolder } = props;
 
   // Reorder items
   const reorder = (list, startIndex, endIndex) => { 
@@ -50,10 +50,10 @@ function PersistentDrawerLeft(props) {
     // A new Array instance
     const workListNInactiveF = [...listF.find((item) => item.id === endIndex).notes];
     workListNInactiveF.push(removedN);
-    // Change the contents of an array
-    Array.prototype.splice.apply(result.find((item) => item.id === endIndex).notes, [0, workListNInactiveF.length].concat(workListNInactiveF));
+    // Change the contents of an array (destination folder)
+    result.find((item) => item.id === endIndex).notes.splice(0, workListNInactiveF.length, ...workListNInactiveF);
+    // Change the contents of an array (current folder)
     result.find((item) => item.id === activeFolderId).notes.splice(startIndex, 1);
-    result.find((item) => item.id === activeFolderId).notes.splice(endIndex, 0);
 
     return result;
   };
@@ -109,15 +109,15 @@ function PersistentDrawerLeft(props) {
       <div className={classes.root}>
         <CssBaseline />
         <TopBar open={open} setOpen={setOpen} />
-        <StableDrawer open={open} setOpen={setOpen} folders={folders} handleOnAddFolder={handleOnAddFolder} />
+        <StableDrawer folders={folders} open={open} setOpen={setOpen} handleOnAddFolder={handleOnAddFolder} />
         <main className={clsx(classes.content, {
           [classes.contentShift]: open
         })}>
           <div className={classes.drawerHeader} />
-          <Box className={classes.wrColumn}>
+          <div className={classes.wrColumn}>
             <ListNotes />
             <NoteContent classes={classes} />    
-          </Box>
+          </div>
         </main>
         <ModalWindow isOpen={isOpen} />    
       </div>

@@ -1,20 +1,13 @@
 // Base
 import React, { Component } from 'react';
-import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
 import { onEditFolderName, getFolderName, onAcceptFolderName, onActiveFolder, onOpenModal } from '../../reducers/index';
 
-// Material-UI
-import { IconButton } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-
-// Beautiful DND
-import { Draggable } from "react-beautiful-dnd";
+// Components
+import ListItem  from '../list-item/list-item';
 
 class FolderListItem extends Component {  
 
@@ -24,6 +17,9 @@ class FolderListItem extends Component {
     id: PropTypes.string,
     title: PropTypes.string,
     index: PropTypes.number,
+    edited: PropTypes.bool,
+    isMobile: PropTypes.bool,
+    isDisabledFolders: PropTypes.bool,
     onEditFolderName: PropTypes.func,
     newFolderName: PropTypes.string,
     onAcceptFolderName: PropTypes.func,
@@ -41,7 +37,7 @@ class FolderListItem extends Component {
 
   // Edit folder name
   handleOnEditFolderName = (e) => {
-    const { folders, onActiveFolder, onEditFolderName, id } = this.props;
+    const { folders, id, onActiveFolder, onEditFolderName } = this.props;
     const idEditedFolder = folders.findIndex((item) => item.id === id);
     const editedFolder = folders[idEditedFolder];
     const updateEditedFolder = {
@@ -66,7 +62,7 @@ class FolderListItem extends Component {
 
   // Accept folder name
   handleOnAcceptFolderName = (e) => {
-    const { folders, newFolderName, onAcceptFolderName, id } = this.props;
+    const { folders, newFolderName, id, onAcceptFolderName } = this.props;
     const oldFolderId = folders.findIndex((item) => item.id === id);
     const oldFolder = folders[oldFolderId];
     const newFolderTitle = newFolderName ? newFolderName : oldFolder.title;
@@ -82,7 +78,7 @@ class FolderListItem extends Component {
 
   // Active folder name
   handleOnActiveFolder = () => {
-    const { setOpen, onActiveFolder, id, isMobile } = this.props;
+    const { id, isMobile, setOpen, onActiveFolder } = this.props;
     
     isMobile && setOpen(false);
     onActiveFolder(id);
@@ -100,84 +96,41 @@ class FolderListItem extends Component {
   });
 
   render() {
-    const { classes, folders, activeFolderId, id, title, index } = this.props;
-    const activeFolder = folders.find((item) => item.edited === true);
-    const isActiveFolder = !activeFolderId ? false : folders.find((item) => item.id === activeFolderId).edited;
+    const { folders, activeFolderId, id, title, index, edited, isDisabledFolders } = this.props;
+    const typeStyles = 'folder';
+    const isSelected =  activeFolderId === id;
+    const isEditable = !activeFolderId ? false : folders.find((item) => item.id === activeFolderId).edited;
 
     return (
-      <>
-        <Draggable draggableId={`${id}`} index={index}>
-          {(provided, snapshot) => (
-            <li 
-              onClick={this.handleOnActiveFolder}
-              className={clsx(classes.inactiveFolderListItem, {
-                  [classes.activeFolderListItem]: activeFolderId === id,
-                  [classes.unclickableFolderListItem]: activeFolder && activeFolder.id !== id
-              })}
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              style={this.getItemStyle(
-                snapshot.isDragging,
-                provided.draggableProps.style
-              )}
-            >
-              <input
-                onClick={(e) => this.handleClickFolderName(e)}
-                onChange={this.handleGetFolderName}
-                type="text"
-                className={isActiveFolder && activeFolderId === id ? classes.activeFolderName : classes.inactiveFolderName}
-                defaultValue={title}
-              />
-
-              <div className={classes.wrFolderControlBtns}>
-                <IconButton 
-                  onClick={(e) => this.handleOnAcceptFolderName(e)}  
-                  aria-label="check" 
-                  className={clsx(classes.folderControlBtns, 
-                    isActiveFolder && activeFolderId === id 
-                      ? classes.activeAcceptFolderNameBtn 
-                      : classes.inActiveAcceptFolderNameBtn
-                  )}
-                >
-                  <CheckIcon className={classes.folderBtnsIncons}  />
-                </IconButton>
-
-                <IconButton 
-                  onClick={(e) => this.handleOnEditFolderName(e)} 
-                  aria-label="edit" 
-                  className={clsx(classes.folderControlBtns, {
-                    [classes.inactiveFolderControlBtns]: isActiveFolder && activeFolderId === id
-                  })}
-                >
-                  <EditIcon className={classes.folderBtnsIncons} />
-                </IconButton>
-
-                <IconButton 
-                  onClick={(e) => this.handleOnDeleteFolder(e)} 
-                  aria-label="delete" 
-                  className={clsx(classes.folderControlBtns, {
-                    [classes.inactiveFolderControlBtns]: isActiveFolder && activeFolderId === id
-                  })}
-                >
-                  <DeleteIcon className={classes.folderBtnsIncons} />
-                </IconButton>
-              </div>
-            </li>
-          )}
-        </Draggable>
-      </>
+      <ListItem 
+        getItemStyle={this.getItemStyle}
+        id={id}  
+        title={title}
+        index={index} 
+        edited={edited}
+        typeStyles={typeStyles}
+        isSelected={isSelected}
+        isEditable={isEditable}
+        isDisabledFolders={isDisabledFolders}
+        handleOnActiveItem={this.handleOnActiveFolder}
+        handleClickItemName={this.handleClickFolderName}
+        handleGetItemName={this.handleGetFolderName}
+        handleOnAcceptItemName={this.handleOnAcceptFolderName}
+        handleOnEditItemName={this.handleOnEditFolderName}
+        handleOnDeleteItem={this.handleOnDeleteFolder}
+      />
     );
   };
 };
 
-const mapStateToProps = ({ folders, newFolderName, activeFolderId, activeNoteId, newNoteName }) => {
+const mapStateToProps = ({ folders, newFolderName, activeFolderId, activeNoteId, newNoteName, isDisabledFolders }) => {
   return {
     folders,
     newFolderName,
     activeFolderId,
     activeNoteId,
-    newNoteName
+    newNoteName,
+    isDisabledFolders
   };
 };
 

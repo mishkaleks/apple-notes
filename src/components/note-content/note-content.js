@@ -5,11 +5,8 @@ import PropTypes from 'prop-types';
 // Redux
 import { connect } from 'react-redux';
 
-// Material-UI
-import { Box } from '@material-ui/core';
-
 // Components
-import NoteText from '../helpers/note-text';
+import NoteText from '../note-text/note-text';
 import StubNoteText from '../helpers/stub-note-text';
 
 class NoteContent extends Component {
@@ -22,13 +19,13 @@ class NoteContent extends Component {
     const { classes, activeNoteId } = this.props;
     
     return (
-      <Box className={classes.wrNoteContent}>
+      <div className={classes.wrNoteContent}>
         {
           !activeNoteId 
             ? ( <StubNoteText /> )
             : ( <NoteText classes={classes} /> )
         }
-      </Box>
+      </div>
     );
   };
 };

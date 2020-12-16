@@ -13,10 +13,58 @@ import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import FolderContent from '../folder-content/folder-content';
 
 // Styles
-import useStyles from './stable-drawer-styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles } from '@material-ui/core/styles';
 
-const StableDrawer = ({ open, setOpen, folders, handleOnAddFolder }) => {
+const drawerWidth = 260;
+
+const useStyles = makeStyles(theme => ({
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+    '@media screen and (max-width: 667px)': {
+      flexShrink: '1'
+    }
+  },
+  drawerPaper: {
+    width: drawerWidth,
+    '@media screen and (max-width: 667px)': {
+      width: '100%'
+    }
+  },
+  drawerHeader: {    
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: '100%',
+    borderBottom: '1px solid #ddd',
+    padding: theme.spacing(0, 1),
+    // Necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    '@media screen and (max-width: 667px)': {
+      backgroundColor: '#3f51b5',
+      color: '#fff'
+    }
+  },
+  wrLogo: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    fontSize: '1.5rem',
+    fontWeight: 'bold'
+  },
+  сreateNewFolderIcon: {
+    color: '#fff'
+  },
+  drawerCloseBtn: {
+    color: 'rgba(0, 0, 0, 0.54)',
+    '@media screen and (max-width: 667px)': {
+      color: '#fff'
+    }
+  }
+}));
+
+const StableDrawer = ({ folders, open, setOpen, handleOnAddFolder }) => {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery('(max-width:667px)');
@@ -45,7 +93,7 @@ const StableDrawer = ({ open, setOpen, folders, handleOnAddFolder }) => {
           <IconButton onClick={handleOnAddFolder} aria-label="create new folder">
             <CreateNewFolderIcon className={classes.сreateNewFolderIcon} />
           </IconButton>
-        ) }
+        )}
 
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === "ltr" ? (
@@ -55,7 +103,7 @@ const StableDrawer = ({ open, setOpen, folders, handleOnAddFolder }) => {
           )}
         </IconButton>  
       </div>
-      <FolderContent setOpen={setOpen} folders={folders} />
+      <FolderContent folders={folders} setOpen={setOpen} />
     </Drawer>
   );
 };
