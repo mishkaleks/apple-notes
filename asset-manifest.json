@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/apple-notes/static/css/main.5711e5f3.chunk.css",
+    "main.js": "/apple-notes/static/js/main.bea79e4f.chunk.js",
+    "main.js.map": "/apple-notes/static/js/main.bea79e4f.chunk.js.map",
+    "runtime-main.js": "/apple-notes/static/js/runtime-main.0ad9856d.js",
+    "runtime-main.js.map": "/apple-notes/static/js/runtime-main.0ad9856d.js.map",
+    "static/js/2.ac4403c8.chunk.js": "/apple-notes/static/js/2.ac4403c8.chunk.js",
+    "static/js/2.ac4403c8.chunk.js.map": "/apple-notes/static/js/2.ac4403c8.chunk.js.map",
+    "index.html": "/apple-notes/index.html",
+    "static/css/main.5711e5f3.chunk.css.map": "/apple-notes/static/css/main.5711e5f3.chunk.css.map",
+    "static/js/2.ac4403c8.chunk.js.LICENSE.txt": "/apple-notes/static/js/2.ac4403c8.chunk.js.LICENSE.txt",
+    "static/media/add-folder.34e40b83.svg": "/apple-notes/static/media/add-folder.34e40b83.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.0ad9856d.js",
+    "static/js/2.ac4403c8.chunk.js",
+    "static/css/main.5711e5f3.chunk.css",
+    "static/js/main.bea79e4f.chunk.js"
+  ]
+}
